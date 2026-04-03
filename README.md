@@ -3,9 +3,9 @@
 [![CI](https://github.com/OutBlade/semiyield/actions/workflows/ci.yml/badge.svg)](https://github.com/OutBlade/semiyield/actions)
 [![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-Cloudflare-orange)](https://semiyield.trycloudflare.com)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-streamlit.app-red)](https://semiyield.streamlit.app)
 
-**Live Demo:** https://semiyield.trycloudflare.com *(available when host machine is running — served via Cloudflare Tunnel)*
+**Live Demo:** https://semiyield.streamlit.app *(hosted 24/7 on Streamlit Community Cloud — no local server required)*
 
 SemiYield is an open-source Python platform that combines first-principles semiconductor process simulation, machine learning yield prediction, statistical process control, Bayesian design-of-experiments optimization, and SPICE model export into a single integrated toolkit. It targets process engineers, researchers, and students working on silicon device fabrication.
 
