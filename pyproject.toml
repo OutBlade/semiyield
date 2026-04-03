@@ -1,0 +1,112 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "semiyield"
+version = "0.1.0"
+description = "AI-driven semiconductor process optimization platform"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "SemiYield Contributors" }]
+keywords = ["semiconductor", "yield", "process optimization", "machine learning"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+]
+
+dependencies = [
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "pandas>=2.0",
+    "scikit-learn>=1.3",
+    "xgboost>=2.0",
+    "torch>=2.0",
+    "botorch>=0.9",
+    "shap>=0.43",
+    "streamlit>=1.28",
+    "plotly>=5.17",
+    "matplotlib>=3.7",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4",
+    "pytest-cov>=4.1",
+    "pytest-timeout>=2.1",
+    "ruff>=0.1",
+    "black>=23.0",
+]
+
+[project.scripts]
+semiyield-dashboard = "dashboard.app:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["semiyield*", "dashboard*"]
+
+# ------------------------------------------------------------------ #
+# Ruff linting configuration                                           #
+# ------------------------------------------------------------------ #
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "UP",  # pyupgrade
+]
+ignore = [
+    "E501",  # line too long (handled by black)
+    "B008",  # do not perform function calls in default arguments
+    "UP007", # use X | Y for type annotations (not available in 3.9)
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["semiyield", "dashboard"]
+
+# ------------------------------------------------------------------ #
+# Black formatting configuration                                       #
+# ------------------------------------------------------------------ #
+[tool.black]
+line-length = 100
+target-version = ["py310", "py311", "py312"]
+
+# ------------------------------------------------------------------ #
+# Pytest configuration                                                 #
+# ------------------------------------------------------------------ #
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short"
+filterwarnings = [
+    "ignore::UserWarning",
+    "ignore::DeprecationWarning",
+]
+
+# ------------------------------------------------------------------ #
+# Coverage configuration                                               #
+# ------------------------------------------------------------------ #
+[tool.coverage.run]
+source = ["semiyield"]
+omit = ["*/tests/*", "*/dashboard/*", "setup.py"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if __name__ == .__main__.:",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+]

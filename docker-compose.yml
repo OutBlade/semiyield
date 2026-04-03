@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  semiyield:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: semiyield:latest
+    container_name: semiyield_app
+    ports:
+      - "8501:8501"
+    volumes:
+      # Persist generated data and model artefacts
+      - semiyield_data:/app/data
+    environment:
+      - STREAMLIT_SERVER_HEADLESS=true
+      - STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c",
+             "import urllib.request; urllib.request.urlopen('http://localhost:8501/_stcore/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  semiyield_data:
+    driver: local
