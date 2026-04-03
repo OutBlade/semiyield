@@ -7,6 +7,8 @@
 
 **Live Demo:** https://semiyield.streamlit.app *(hosted 24/7 on Streamlit Community Cloud — no local server required)*
 
+[![Dashboard Preview](docs/dashboard_preview.png)](https://semiyield.streamlit.app)
+
 SemiYield is an open-source Python platform that combines first-principles semiconductor process simulation, machine learning yield prediction, statistical process control, Bayesian design-of-experiments optimization, and SPICE model export into a single integrated toolkit. It targets process engineers, researchers, and students working on silicon device fabrication.
 
 
