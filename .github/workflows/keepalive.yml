@@ -2,7 +2,8 @@ name: Keepalive
 
 # Uses a real headless browser so it can detect the Streamlit sleep page
 # and click "Yes, get this app back up!" automatically.
-# A plain curl only hits the static sleep page and never wakes the app.
+# Also commits a timestamp to the repo every run so GitHub never disables
+# this workflow due to 60 days of repository inactivity.
 on:
   schedule:
     - cron: "0 10 */2 * *"   # every 2 days at 10:00 UTC
@@ -12,7 +13,11 @@ jobs:
   wake:
     name: Wake Streamlit app
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
+      - uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -60,3 +65,12 @@ jobs:
 
           asyncio.run(main())
           EOF
+
+      - name: Commit timestamp to keep workflow active
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          date -u > .github/keepalive-last-run
+          git add .github/keepalive-last-run
+          git commit -m "chore: keepalive $(date -u '+%Y-%m-%d')" || echo "Nothing to commit"
+          git push
