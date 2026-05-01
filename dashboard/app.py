@@ -35,9 +35,10 @@ from semiyield.simulation import (
 )
 from semiyield.datagen import FabDataGenerator
 from semiyield.spc import ControlChart, western_electric_violations, process_capability
-from semiyield.models import YieldEnsemble, SHAPExplainer
-from semiyield.doe import ProcessWindowOptimizer
 from semiyield.spice import SPICEExporter
+
+# semiyield.models (torch, xgboost, shap) and semiyield.doe (botorch) are
+# imported lazily inside their page functions to keep initial startup fast.
 
 # ------------------------------------------------------------------ #
 # Page configuration                                                   #
@@ -429,6 +430,8 @@ def page_spc() -> None:
 def page_yield_prediction() -> None:
     st.title("Yield Prediction")
 
+    from semiyield.models import YieldEnsemble, SHAPExplainer  # noqa: PLC0415
+
     if st.session_state.get("fab_df") is None:
         st.warning("Generate fab data first using the Data Generator page.")
         return
@@ -548,6 +551,8 @@ def page_yield_prediction() -> None:
 
 def page_optimizer() -> None:
     st.title("Bayesian Process Window Optimizer")
+
+    from semiyield.doe import ProcessWindowOptimizer  # noqa: PLC0415
 
     st.markdown(
         "Define parameter bounds, then run Bayesian optimization to find the "
