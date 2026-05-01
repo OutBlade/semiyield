@@ -1,26 +1,62 @@
 name: Keepalive
 
-# Pings semiyield.streamlit.app every 4 days so Streamlit Community Cloud
-# never reaches its 7-day inactivity sleep threshold.
+# Uses a real headless browser so it can detect the Streamlit sleep page
+# and click "Yes, get this app back up!" automatically.
+# A plain curl only hits the static sleep page and never wakes the app.
 on:
   schedule:
-    - cron: "0 10 */4 * *"   # every 4 days at 10:00 UTC
-  workflow_dispatch:          # allow manual trigger from the Actions tab
+    - cron: "0 10 */2 * *"   # every 2 days at 10:00 UTC
+  workflow_dispatch:          # manual trigger from the Actions tab
 
 jobs:
-  ping:
-    name: Ping Streamlit app
+  wake:
+    name: Wake Streamlit app
     runs-on: ubuntu-latest
     steps:
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Playwright + Chromium
+        run: |
+          pip install playwright
+          playwright install chromium --with-deps
+
       - name: Wake app
         run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            --max-time 30 \
-            --retry 3 \
-            --retry-delay 10 \
-            https://semiyield.streamlit.app)
-          echo "HTTP status: $STATUS"
-          # 200 = running, 503 = waking up — both are expected and fine
-          if [ "$STATUS" -ne 200 ] && [ "$STATUS" -ne 503 ]; then
-            echo "Unexpected status $STATUS" && exit 1
-          fi
+          python - <<'EOF'
+          import asyncio
+          from playwright.async_api import async_playwright
+
+          APP_URL = "https://semiyield.streamlit.app"
+
+          async def main():
+              async with async_playwright() as p:
+                  browser = await p.chromium.launch()
+                  page = await browser.new_page()
+
+                  print(f"Opening {APP_URL} ...")
+                  await page.goto(APP_URL, timeout=60_000)
+
+                  # Detect the sleep page by looking for the wake button.
+                  try:
+                      btn = await page.wait_for_selector(
+                          "text=Yes, get this app back up!",
+                          timeout=6_000,
+                      )
+                      print("App is sleeping — clicking wake button ...")
+                      await btn.click()
+                      # Wait up to 3 min for the app to fully start.
+                      await page.wait_for_selector(
+                          "[data-testid='stApp']",
+                          timeout=180_000,
+                      )
+                      print("App woken and loaded successfully.")
+                  except Exception:
+                      print("App was already awake.")
+
+                  await browser.close()
+
+          asyncio.run(main())
+          EOF
