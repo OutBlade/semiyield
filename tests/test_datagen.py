@@ -3,7 +3,7 @@ Tests for semiyield.datagen.FabDataGenerator.
 """
 
 import numpy as np
-import pytest
+import pandas as pd
 
 from semiyield.datagen import FabDataGenerator
 
@@ -11,7 +11,7 @@ from semiyield.datagen import FabDataGenerator
 class TestFabDataGenerator:
     """Tests for FabDataGenerator synthetic fab data."""
 
-    def _make_df(self, seed: int = 42, n_lots: int = 20, wafers_per_lot: int = 5) -> "import pandas; pandas.DataFrame":
+    def _make_df(self, seed: int = 42, n_lots: int = 20, wafers_per_lot: int = 5) -> pd.DataFrame:
         gen = FabDataGenerator(seed=seed)
         return gen.generate(n_lots=n_lots, wafers_per_lot=wafers_per_lot)
 

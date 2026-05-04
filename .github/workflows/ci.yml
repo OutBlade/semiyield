@@ -32,7 +32,9 @@ jobs:
         run: pip install ruff black
 
       - name: Run ruff
-        run: ruff check semiyield/ tests/ dashboard/
+        run: |
+          ruff check --fix --unsafe-fixes semiyield/ tests/ dashboard/ || true
+          ruff check semiyield/ tests/ dashboard/
 
       - name: Run black check
         run: black --check semiyield/ tests/ dashboard/

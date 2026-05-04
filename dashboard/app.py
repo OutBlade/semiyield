@@ -530,8 +530,6 @@ def page_yield_prediction() -> None:
     df_clean = df[features].dropna()
     for i, feat in enumerate(features):
         col_i = cols_pred[i % 3]
-        mn = float(df_clean[feat].min())
-        mx = float(df_clean[feat].max())
         med = float(df_clean[feat].median())
         input_vals[feat] = col_i.number_input(feat, value=med, format="%.5g")
 

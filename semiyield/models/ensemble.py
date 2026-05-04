@@ -15,7 +15,6 @@ Reference:
 
 from __future__ import annotations
 
-import os
 import pickle
 import warnings
 from pathlib import Path
@@ -434,7 +433,7 @@ class YieldEnsemble:
         patience_counter = 0
         best_state = None
 
-        for epoch in range(self.lstm_epochs):
+        for _epoch in range(self.lstm_epochs):
             self.lstm_net.train()
             for xb, yb in loader:
                 optimiser.zero_grad()

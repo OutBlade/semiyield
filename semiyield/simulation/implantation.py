@@ -25,7 +25,7 @@ import math
 from typing import Literal
 
 import numpy as np
-from scipy import special, stats
+from scipy import stats
 
 # ------------------------------------------------------------------ #
 # LSS-theory-based empirical tables for Rp and dRp                    #
@@ -220,7 +220,7 @@ class IonImplantationModel:
         Rp, dRp = _interpolate_range(species, energy)
 
         # Peak concentration (at x=Rp)
-        peak = dose * 1e-14 / (math.sqrt(2 * math.pi) * dRp)
+        _peak = dose * 1e-14 / (math.sqrt(2 * math.pi) * dRp)
         # dose [cm^{-2}] -> dose_nm2 [nm^{-2}] using 1 cm = 1e7 nm
         # dose_nm2 = dose * 1e-14;  peak [nm^{-3}] * 1e21 = cm^{-3}
         peak_cm3 = dose * 1e-14 / (math.sqrt(2 * math.pi) * dRp) * 1e21

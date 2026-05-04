@@ -24,7 +24,6 @@ import numpy as np
 
 try:
     import torch
-    import botorch
     from botorch.fit import fit_gpytorch_mll
     from botorch.models import SingleTaskGP
     from botorch.acquisition import ExpectedImprovement
@@ -132,8 +131,6 @@ class ProcessWindowOptimizer:
         """
         if not self._param_names:
             raise RuntimeError("Call define_space() first.")
-
-        n_params = len(self._param_names)
 
         if self._X_obs is None or len(self._X_obs) < 2:
             # Not enough data: use latin hypercube sampling

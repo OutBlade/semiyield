@@ -94,8 +94,6 @@ _BSIM3_DEFAULTS: dict[str, float] = {
     "PRWG":    0.0,
     "PRWB":    0.0,
     "WR":      1.0,
-    "WINT":    0.0,
-    "LINT":    0.0,
     "DWG":     0.0,
     "DWB":     0.0,
     "VOFF":    -0.08,
@@ -117,7 +115,6 @@ _BSIM3_DEFAULTS: dict[str, float] = {
     "PVAG":    0.0,
     "DELTA":   0.01,
     "RSH":     0.0,
-    "MOBMOD":  1.0,
     "PRT":     0.0,
     "UTE":     -1.5,
     "KT1":     -0.11,
@@ -221,7 +218,7 @@ class SPICEExporter:
         xj_nm = float(process_params.get("junction_depth_nm", 50.0))
 
         tox_m = tox_nm * 1e-9            # nm -> m
-        Lg_m = Lg_nm * 1e-9
+        _Lg_m = Lg_nm * 1e-9
         xj_m = xj_nm * 1e-9
 
         # Gate oxide capacitance per unit area

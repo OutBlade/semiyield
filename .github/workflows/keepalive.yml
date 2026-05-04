@@ -6,7 +6,7 @@ name: Keepalive
 # this workflow due to 60 days of repository inactivity.
 on:
   schedule:
-    - cron: "0 10 */2 * *"   # every 2 days at 10:00 UTC
+    - cron: "0 10 * * *"     # every day at 10:00 UTC
   workflow_dispatch:          # manual trigger from the Actions tab
 
 jobs:

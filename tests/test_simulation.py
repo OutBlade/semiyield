@@ -8,8 +8,6 @@ Ion implantation reference values from:
   Gibbons, Johnson & Mylroie, "Projected Range Statistics," 1975.
 """
 
-import math
-
 import numpy as np
 import pytest
 
@@ -267,7 +265,7 @@ class TestDeposition:
         model = CVDModel(process_type="LPCVD", material="SiO2")
         t1 = model.deposit(10.0, 700.0, 1.0)
         t2 = model.deposit(20.0, 700.0, 1.0)
-        t4 = model.deposit(40.0, 700.0, 1.0)
+        _t4 = model.deposit(40.0, 700.0, 1.0)
         assert t2 > t1, "Thickness must increase with time"
         # Linear: t2/t1 ~ 2, t4/t1 ~ 4 (within 1% due to floating point)
         ratio = t2 / t1
