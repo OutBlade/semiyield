@@ -77,9 +77,9 @@ class TestProcessWindowOptimizer:
         true_optimum = _quadratic_objective(np.array([1.5, 2.0]))
         best = result["best_value"]
         assert best > 0.7, f"Optimizer should find value > 0.7; got {best:.4f}"
-        assert abs(best - true_optimum) < 0.25, (
-            f"Best value {best:.4f} is too far from true optimum {true_optimum:.4f}"
-        )
+        assert (
+            abs(best - true_optimum) < 0.25
+        ), f"Best value {best:.4f} is too far from true optimum {true_optimum:.4f}"
 
     def test_optimize_returns_required_keys(self) -> None:
         """optimize() result dict should contain expected keys."""
@@ -101,9 +101,9 @@ class TestProcessWindowOptimizer:
         opt = self._make_optimizer()
         n_init, n_iter = 5, 10
         result = opt.optimize(_quadratic_objective, n_iter=n_iter, n_init=n_init)
-        assert len(result["history_y"]) == n_init + n_iter, (
-            f"History length should be {n_init + n_iter}, got {len(result['history_y'])}"
-        )
+        assert (
+            len(result["history_y"]) == n_init + n_iter
+        ), f"History length should be {n_init + n_iter}, got {len(result['history_y'])}"
 
     def test_process_window_contains_optimum(self) -> None:
         """The process window should contain the best observed point."""
@@ -115,9 +115,9 @@ class TestProcessWindowOptimizer:
 
         for name, (lo, hi) in window.items():
             x_best = best_params[name]
-            assert lo <= x_best <= hi, (
-                f"Best param {name}={x_best:.4f} outside window [{lo:.4f}, {hi:.4f}]"
-            )
+            assert (
+                lo <= x_best <= hi
+            ), f"Best param {name}={x_best:.4f} outside window [{lo:.4f}, {hi:.4f}]"
 
     def test_suggest_before_define_space_raises(self) -> None:
         """suggest() without define_space() should raise RuntimeError."""

@@ -123,7 +123,7 @@ class TestWesternElectricRules:
         ucl = cl + 3 * sigma
         lcl = cl - 3 * sigma
         data = np.full(20, cl)  # all on centre line
-        data[10] = ucl + 1.0   # inject one point beyond UCL
+        data[10] = ucl + 1.0  # inject one point beyond UCL
         violations = western_electric_violations(data, ucl, lcl, cl)
         rule1 = [v for v in violations if v[1] == 1]
         assert len(rule1) >= 1, "Rule 1 should fire for a point beyond 3-sigma"
@@ -155,11 +155,13 @@ class TestWesternElectricRules:
         cl = 100.0
         ucl = cl + 15.0
         lcl = cl - 15.0
-        data = np.concatenate([
-            np.full(5, cl),
-            np.linspace(cl, cl + 3.0, 6),  # strictly increasing
-            np.full(5, cl),
-        ])
+        data = np.concatenate(
+            [
+                np.full(5, cl),
+                np.linspace(cl, cl + 3.0, 6),  # strictly increasing
+                np.full(5, cl),
+            ]
+        )
         violations = western_electric_violations(data, ucl, lcl, cl)
         rule5 = [v for v in violations if v[1] == 5]
         assert len(rule5) >= 1, f"Rule 5 should fire for monotone trend; violations={violations}"
@@ -189,9 +191,9 @@ class TestProcessCapability:
         usl = mu + 3 * sigma
         lsl = mu - 3 * sigma
         cap = process_capability(data, usl, lsl)
-        assert abs(cap["Cp"] - cap["Cpk"]) < 0.05, (
-            f"Cp ({cap['Cp']:.4f}) and Cpk ({cap['Cpk']:.4f}) should be equal for centered process"
-        )
+        assert (
+            abs(cap["Cp"] - cap["Cpk"]) < 0.05
+        ), f"Cp ({cap['Cp']:.4f}) and Cpk ({cap['Cpk']:.4f}) should be equal for centered process"
 
     def test_cpk_less_than_cp_for_off_center(self) -> None:
         """An off-centre process should have Cpk < Cp."""
@@ -202,9 +204,9 @@ class TestProcessCapability:
         usl = 115.0
         lsl = 85.0
         cap = process_capability(data, usl, lsl)
-        assert cap["Cpk"] < cap["Cp"], (
-            f"Off-centre process: Cpk ({cap['Cpk']:.4f}) should be < Cp ({cap['Cp']:.4f})"
-        )
+        assert (
+            cap["Cpk"] < cap["Cp"]
+        ), f"Off-centre process: Cpk ({cap['Cpk']:.4f}) should be < Cp ({cap['Cp']:.4f})"
 
     def test_ppk_leq_cpk_with_assignable_cause(self) -> None:
         """For data with assignable-cause variation (step shifts), Ppk < Cpk.
@@ -227,9 +229,9 @@ class TestProcessCapability:
             f"Data with step shift should have sigma_overall > sigma_within: "
             f"overall={cap['sigma_overall']:.3f}, within={cap['sigma_within']:.3f}"
         )
-        assert cap["Ppk"] < cap["Cpk"], (
-            f"With assignable-cause shift, Ppk ({cap['Ppk']:.4f}) should be < Cpk ({cap['Cpk']:.4f})"
-        )
+        assert (
+            cap["Ppk"] < cap["Cpk"]
+        ), f"With assignable-cause shift, Ppk ({cap['Ppk']:.4f}) should be < Cpk ({cap['Cpk']:.4f})"
 
     def test_sigma_level_for_six_sigma_process(self) -> None:
         """A 6-sigma process (USL/LSL at 6*sigma) should have sigma_level ~ 6."""
@@ -240,15 +242,24 @@ class TestProcessCapability:
         lsl = mu - 6 * sigma
         cap = process_capability(data, usl, lsl)
         # sigma_level should be close to 6 (within 10% due to sampling variation)
-        assert 5.0 < cap["sigma_level"] < 7.5, (
-            f"6-sigma process should have sigma_level near 6, got {cap['sigma_level']:.2f}"
-        )
+        assert (
+            5.0 < cap["sigma_level"] < 7.5
+        ), f"6-sigma process should have sigma_level near 6, got {cap['sigma_level']:.2f}"
 
     def test_capability_indices_all_present(self) -> None:
         """All expected keys must be present in the result dict."""
         data = np.random.normal(100, 5, 100)
         cap = process_capability(data, 115.0, 85.0)
-        for key in ("Cp", "Cpk", "Pp", "Ppk", "sigma_within", "sigma_overall", "mean", "sigma_level"):
+        for key in (
+            "Cp",
+            "Cpk",
+            "Pp",
+            "Ppk",
+            "sigma_within",
+            "sigma_overall",
+            "mean",
+            "sigma_level",
+        ):
             assert key in cap, f"Missing key '{key}' in process_capability result"
 
     def test_cp_formula_3sigma(self) -> None:
@@ -261,6 +272,6 @@ class TestProcessCapability:
         # sigma_within from MR_bar / d2. Should be close to 5.0 for normal data.
         sigma_within = cap["sigma_within"]
         Cp_expected = 30.0 / (6.0 * sigma_within)
-        assert abs(cap["Cp"] - Cp_expected) < 0.01, (
-            f"Cp formula mismatch: computed {cap['Cp']:.4f}, expected {Cp_expected:.4f}"
-        )
+        assert (
+            abs(cap["Cp"] - Cp_expected) < 0.01
+        ), f"Cp formula mismatch: computed {cap['Cp']:.4f}, expected {Cp_expected:.4f}"

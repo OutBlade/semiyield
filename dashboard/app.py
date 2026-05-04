@@ -74,6 +74,7 @@ with st.sidebar:
 # PAGE: Simulation                                                     #
 # ================================================================== #
 
+
 def page_simulation() -> None:
     st.title("Process Simulation")
 
@@ -101,7 +102,11 @@ def page_simulation() -> None:
         rates = np.array([model_ox.rate(t, temp_ox, atm_ox, init_thick) for t in times])
 
         fig = go.Figure()
-        fig.add_trace(go.Scatter(x=times, y=thicknesses, name="Thickness (nm)", line=dict(color="#1f77b4", width=2)))
+        fig.add_trace(
+            go.Scatter(
+                x=times, y=thicknesses, name="Thickness (nm)", line=dict(color="#1f77b4", width=2)
+            )
+        )
         fig.update_layout(
             title=f"Oxide Growth: {temp_ox}C, {atm_ox}",
             xaxis_title="Time (min)",
@@ -111,7 +116,11 @@ def page_simulation() -> None:
         st.plotly_chart(fig, use_container_width=True)
 
         fig2 = go.Figure()
-        fig2.add_trace(go.Scatter(x=times[1:], y=rates[1:], name="Growth rate", line=dict(color="#ff7f0e", width=2)))
+        fig2.add_trace(
+            go.Scatter(
+                x=times[1:], y=rates[1:], name="Growth rate", line=dict(color="#ff7f0e", width=2)
+            )
+        )
         fig2.update_layout(
             title="Growth Rate vs Time",
             xaxis_title="Time (min)",
@@ -130,12 +139,16 @@ def page_simulation() -> None:
         with col1:
             species = st.selectbox("Ion species", ["boron", "phosphorus", "arsenic", "antimony"])
             energy = st.slider("Energy (keV)", 10, 300, 50, 5)
-            dose = st.number_input("Dose (cm^-2)", value=1e13, format="%.2e", min_value=1e10, max_value=1e16)
+            dose = st.number_input(
+                "Dose (cm^-2)", value=1e13, format="%.2e", min_value=1e10, max_value=1e16
+            )
             background = st.number_input("Background doping (cm^-3)", value=1e16, format="%.2e")
             dist_type = st.selectbox("Distribution model", ["gaussian", "pearsoniv"])
         with col2:
             st.markdown("**Gaussian profile:**")
-            st.latex(r"N(x) = \frac{\Phi}{\sqrt{2\pi}\,\Delta R_p} \exp\!\left(-\frac{(x-R_p)^2}{2\Delta R_p^2}\right)")
+            st.latex(
+                r"N(x) = \frac{\Phi}{\sqrt{2\pi}\,\Delta R_p} \exp\!\left(-\frac{(x-R_p)^2}{2\Delta R_p^2}\right)"
+            )
 
         model_impl = IonImplantationModel(distribution=dist_type)
         depths = np.linspace(0, 600, 500)
@@ -144,11 +157,22 @@ def page_simulation() -> None:
 
         fig = go.Figure()
         mask = conc > 0
-        fig.add_trace(go.Scatter(x=depths[mask], y=conc[mask], name=f"{species} profile", line=dict(color="#2ca02c", width=2)))
+        fig.add_trace(
+            go.Scatter(
+                x=depths[mask],
+                y=conc[mask],
+                name=f"{species} profile",
+                line=dict(color="#2ca02c", width=2),
+            )
+        )
         if background > 0:
-            fig.add_hline(y=background, line_dash="dash", line_color="red", annotation_text="Background")
+            fig.add_hline(
+                y=background, line_dash="dash", line_color="red", annotation_text="Background"
+            )
         if jd > 0:
-            fig.add_vline(x=jd, line_dash="dot", line_color="orange", annotation_text=f"xj={jd:.1f} nm")
+            fig.add_vline(
+                x=jd, line_dash="dot", line_color="orange", annotation_text=f"xj={jd:.1f} nm"
+            )
         fig.update_layout(
             title=f"{species.capitalize()} implant at {energy} keV",
             xaxis_title="Depth (nm)",
@@ -179,21 +203,45 @@ def page_simulation() -> None:
         model_etch = LangmuirHinshelwoodModel(mode=etch_mode)
 
         temps_etch = np.linspace(20, 400, 100)
-        rates_etch = [model_etch.rate(etch_pressure, t, etch_material, pressure_b) for t in temps_etch]
+        rates_etch = [
+            model_etch.rate(etch_pressure, t, etch_material, pressure_b) for t in temps_etch
+        ]
 
         pressures = np.linspace(10, 500, 100)
         rates_vs_p = [model_etch.rate(p, etch_temp, etch_material, pressure_b) for p in pressures]
 
         fig_e1 = go.Figure()
-        fig_e1.add_trace(go.Scatter(x=temps_etch, y=rates_etch, name="Etch rate vs T", line=dict(color="#9467bd", width=2)))
-        fig_e1.update_layout(xaxis_title="Temperature (C)", yaxis_title="Etch Rate (nm/min)", height=300,
-                             title=f"{etch_material} etch rate vs temperature")
+        fig_e1.add_trace(
+            go.Scatter(
+                x=temps_etch,
+                y=rates_etch,
+                name="Etch rate vs T",
+                line=dict(color="#9467bd", width=2),
+            )
+        )
+        fig_e1.update_layout(
+            xaxis_title="Temperature (C)",
+            yaxis_title="Etch Rate (nm/min)",
+            height=300,
+            title=f"{etch_material} etch rate vs temperature",
+        )
         st.plotly_chart(fig_e1, use_container_width=True)
 
         fig_e2 = go.Figure()
-        fig_e2.add_trace(go.Scatter(x=pressures, y=rates_vs_p, name="Rate vs pressure", line=dict(color="#8c564b", width=2)))
-        fig_e2.update_layout(xaxis_title="Pressure (mTorr)", yaxis_title="Etch Rate (nm/min)", height=300,
-                             title=f"{etch_material} etch rate vs pressure at {etch_temp}C")
+        fig_e2.add_trace(
+            go.Scatter(
+                x=pressures,
+                y=rates_vs_p,
+                name="Rate vs pressure",
+                line=dict(color="#8c564b", width=2),
+            )
+        )
+        fig_e2.update_layout(
+            xaxis_title="Pressure (mTorr)",
+            yaxis_title="Etch Rate (nm/min)",
+            height=300,
+            title=f"{etch_material} etch rate vs pressure at {etch_temp}C",
+        )
         st.plotly_chart(fig_e2, use_container_width=True)
 
         r_sio2 = model_etch.rate(etch_pressure, etch_temp, "SiO2", pressure_b)
@@ -210,10 +258,12 @@ def page_simulation() -> None:
         col1, col2 = st.columns(2)
         with col1:
             proc_type = st.selectbox("Process type", ["LPCVD", "PECVD", "ALD", "PVD"])
-            mat_map = {"LPCVD": ["SiO2", "Si3N4", "poly_Si"],
-                       "PECVD": ["SiO2", "Si3N4", "a_Si"],
-                       "ALD":   ["HfO2", "Al2O3", "TiN"],
-                       "PVD":   ["Al", "TiN", "W"]}
+            mat_map = {
+                "LPCVD": ["SiO2", "Si3N4", "poly_Si"],
+                "PECVD": ["SiO2", "Si3N4", "a_Si"],
+                "ALD": ["HfO2", "Al2O3", "TiN"],
+                "PVD": ["Al", "TiN", "W"],
+            }
             dep_material = st.selectbox("Material", mat_map[proc_type])
             dep_temp = st.slider("Temperature (C)", 100, 900, 600, 25)
             dep_pressure = st.slider("Pressure (Torr)", 0.001, 1.0, 0.1, 0.001, format="%.3f")
@@ -242,8 +292,10 @@ def page_simulation() -> None:
         fig_d.add_trace(go.Scatter(x=temps_dep, y=rates_dep, line=dict(color="#17becf", width=2)))
         fig_d.update_layout(
             title=f"{proc_type} {dep_material} growth rate vs temperature",
-            xaxis_title="Temperature (C)", yaxis_title="Rate (nm/min or nm/cycle)",
-            yaxis_type="log", height=350,
+            xaxis_title="Temperature (C)",
+            yaxis_title="Rate (nm/min or nm/cycle)",
+            yaxis_type="log",
+            height=350,
         )
         st.plotly_chart(fig_d, use_container_width=True)
 
@@ -257,6 +309,7 @@ def page_simulation() -> None:
 # ================================================================== #
 # PAGE: Data Generator                                                 #
 # ================================================================== #
+
 
 def page_datagen() -> None:
     st.title("Synthetic Fab Data Generator")
@@ -291,7 +344,9 @@ def page_datagen() -> None:
 
     with col2:
         st.success(f"Generated {len(df)} wafers across {df['lot_id'].nunique()} lots.")
-        st.dataframe(df.drop(columns=["wafer_map"], errors="ignore").head(20), use_container_width=True)
+        st.dataframe(
+            df.drop(columns=["wafer_map"], errors="ignore").head(20), use_container_width=True
+        )
 
     # Download button
     csv_buf = io.StringIO()
@@ -305,14 +360,23 @@ def page_datagen() -> None:
 
     # Trend plots
     st.subheader("Process Parameter Trends")
-    param_choice = st.selectbox("Parameter", [
-        "gate_oxide_thickness", "poly_cd", "implant_dose",
-        "anneal_temp", "metal_resistance", "contact_resistance", "yield"
-    ])
+    param_choice = st.selectbox(
+        "Parameter",
+        [
+            "gate_oxide_thickness",
+            "poly_cd",
+            "implant_dose",
+            "anneal_temp",
+            "metal_resistance",
+            "contact_resistance",
+            "yield",
+        ],
+    )
 
     lot_means = df.groupby("lot_sequence")[param_choice].mean().reset_index()
-    fig_trend = px.line(lot_means, x="lot_sequence", y=param_choice,
-                        title=f"{param_choice} lot mean over time")
+    fig_trend = px.line(
+        lot_means, x="lot_sequence", y=param_choice, title=f"{param_choice} lot mean over time"
+    )
     st.plotly_chart(fig_trend, use_container_width=True)
 
     # Wafer map
@@ -325,7 +389,8 @@ def page_datagen() -> None:
         fig_wmap = px.imshow(
             wmap_display,
             color_continuous_scale="RdYlGn",
-            zmin=0, zmax=1,
+            zmin=0,
+            zmax=1,
             title=f"Local yield map: {selected_wafer}",
         )
         st.plotly_chart(fig_wmap, use_container_width=True)
@@ -334,6 +399,7 @@ def page_datagen() -> None:
 # ================================================================== #
 # PAGE: SPC Dashboard                                                  #
 # ================================================================== #
+
 
 def page_spc() -> None:
     st.title("SPC Dashboard")
@@ -387,13 +453,16 @@ def page_spc() -> None:
     colors = ["red" if i in viol_idx else "#1f77b4" for i in x_vals]
 
     fig_ic = go.Figure()
-    fig_ic.add_trace(go.Scatter(
-        x=x_vals, y=data_arr.tolist(),
-        mode="lines+markers",
-        marker=dict(color=colors, size=5),
-        line=dict(color="#1f77b4"),
-        name=param_spc,
-    ))
+    fig_ic.add_trace(
+        go.Scatter(
+            x=x_vals,
+            y=data_arr.tolist(),
+            mode="lines+markers",
+            marker=dict(color=colors, size=5),
+            line=dict(color="#1f77b4"),
+            name=param_spc,
+        )
+    )
     fig_ic.add_hline(y=cd["cl"], line_dash="solid", line_color="green", annotation_text="CL")
     fig_ic.add_hline(y=cd["ucl"], line_dash="dash", line_color="red", annotation_text="UCL")
     fig_ic.add_hline(y=cd["lcl"], line_dash="dash", line_color="red", annotation_text="LCL")
@@ -427,6 +496,7 @@ def page_spc() -> None:
 # PAGE: Yield Prediction                                               #
 # ================================================================== #
 
+
 def page_yield_prediction() -> None:
     st.title("Yield Prediction")
 
@@ -438,9 +508,15 @@ def page_yield_prediction() -> None:
 
     df = st.session_state.fab_df
     feature_cols = [
-        "gate_oxide_thickness", "poly_cd", "implant_dose",
-        "anneal_temp", "metal_resistance", "contact_resistance",
-        "etch_rate", "deposition_unif", "defect_density",
+        "gate_oxide_thickness",
+        "poly_cd",
+        "implant_dose",
+        "anneal_temp",
+        "metal_resistance",
+        "contact_resistance",
+        "etch_rate",
+        "deposition_unif",
+        "defect_density",
     ]
     available_features = [c for c in feature_cols if c in df.columns]
     target_col = "yield"
@@ -509,12 +585,14 @@ def page_yield_prediction() -> None:
         st.subheader("Feature Importance (SHAP)")
         feat_names = [f[0] for f in st.session_state.top_features]
         feat_vals = [f[1] for f in st.session_state.top_features]
-        fig_shap = go.Figure(go.Bar(
-            x=feat_vals[::-1],
-            y=feat_names[::-1],
-            orientation="h",
-            marker_color="#1f77b4",
-        ))
+        fig_shap = go.Figure(
+            go.Bar(
+                x=feat_vals[::-1],
+                y=feat_names[::-1],
+                orientation="h",
+                marker_color="#1f77b4",
+            )
+        )
         fig_shap.update_layout(
             xaxis_title="Mean |SHAP value|",
             title="Feature importance for yield prediction",
@@ -539,13 +617,14 @@ def page_yield_prediction() -> None:
     st.metric(
         "Predicted Yield",
         f"{float(mean_pred[0]):.4f}",
-        delta=f"±{float(std_pred[0]):.4f} uncertainty"
+        delta=f"±{float(std_pred[0]):.4f} uncertainty",
     )
 
 
 # ================================================================== #
 # PAGE: Process Optimizer                                              #
 # ================================================================== #
+
 
 def page_optimizer() -> None:
     st.title("Bayesian Process Window Optimizer")
@@ -573,10 +652,12 @@ def page_optimizer() -> None:
     if run_opt:
         with st.spinner("Running Bayesian optimization..."):
             optimizer = ProcessWindowOptimizer(seed=42)
-            optimizer.define_space({
-                "gate_oxide_time": (ox_lo, ox_hi),
-                "anneal_temp": (ann_lo, ann_hi),
-            })
+            optimizer.define_space(
+                {
+                    "gate_oxide_time": (ox_lo, ox_hi),
+                    "anneal_temp": (ann_lo, ann_hi),
+                }
+            )
 
             # Objective: quadratic yield model (synthetic)
             # Maximum at (gate_oxide_time ~ 125, anneal_temp ~ 1000)
@@ -612,10 +693,17 @@ def page_optimizer() -> None:
     history_y = result["history_y"]
     best_so_far = np.maximum.accumulate(history_y)
     fig_conv = go.Figure()
-    fig_conv.add_trace(go.Scatter(y=history_y, mode="markers", name="Observations", marker=dict(color="#aec7e8")))
-    fig_conv.add_trace(go.Scatter(y=best_so_far, mode="lines", name="Best so far", line=dict(color="#1f77b4", width=2)))
+    fig_conv.add_trace(
+        go.Scatter(y=history_y, mode="markers", name="Observations", marker=dict(color="#aec7e8"))
+    )
+    fig_conv.add_trace(
+        go.Scatter(
+            y=best_so_far, mode="lines", name="Best so far", line=dict(color="#1f77b4", width=2)
+        )
+    )
     fig_conv.update_layout(
-        xaxis_title="Iteration", yaxis_title="Yield",
+        xaxis_title="Iteration",
+        yaxis_title="Yield",
         title="Bayesian optimization convergence",
         height=350,
     )
@@ -638,6 +726,7 @@ def page_optimizer() -> None:
 # PAGE: SPICE Export                                                   #
 # ================================================================== #
 
+
 def page_spice() -> None:
     st.title("SPICE Model Card Export")
 
@@ -652,7 +741,7 @@ def page_spice() -> None:
         tox = st.slider("Gate oxide thickness (nm)", 1.0, 20.0, 8.5, 0.1)
         Lg = st.slider("Channel length (nm)", 28.0, 500.0, 90.0, 1.0)
         NA_exp = st.slider("Substrate doping (log10 cm^-3)", 14.0, 18.0, 17.0, 0.1)
-        NA = 10 ** NA_exp
+        NA = 10**NA_exp
         xj = st.slider("Junction depth (nm)", 10.0, 200.0, 50.0, 1.0)
         model_level = st.selectbox("Model level", ["bsim3", "bsim4"])
         model_name = st.text_input("Model name", value="nmos_90nm")
@@ -699,7 +788,9 @@ def page_spice() -> None:
         with tempfile.NamedTemporaryFile(suffix=".subckt", delete=False) as tmp:
             exporter.write_subckt(process_params, model_name, tmp.name)
             content = Path(tmp.name).read_text()
-        st.download_button("Download .subckt", content.encode(), f"{model_name}.subckt", "text/plain")
+        st.download_button(
+            "Download .subckt", content.encode(), f"{model_name}.subckt", "text/plain"
+        )
         st.code(content, language="spice")
 
     with col_b:
@@ -715,7 +806,9 @@ def page_spice() -> None:
                 exporter.write_model_card(process_params, model_name, tmp_mc.name)
                 exporter.write_testbench(model_name, tmp_tb.name)
             content = Path(tmp_tb.name).read_text()
-        st.download_button("Download testbench", content.encode(), f"{model_name}_tb.sp", "text/plain")
+        st.download_button(
+            "Download testbench", content.encode(), f"{model_name}_tb.sp", "text/plain"
+        )
         st.code(content, language="spice")
 
 

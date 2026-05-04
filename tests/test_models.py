@@ -18,7 +18,9 @@ def _make_data(
     n_samples: int = 300, n_features: int = 8, noise: float = 0.05
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Create a synthetic regression dataset for testing."""
-    X, y = make_regression(n_samples=n_samples, n_features=n_features, noise=noise * n_samples, random_state=0)
+    X, y = make_regression(
+        n_samples=n_samples, n_features=n_features, noise=noise * n_samples, random_state=0
+    )
     # Rescale y to [0.4, 0.95] to mimic yield
     y = 0.4 + 0.55 * (y - y.min()) / (y.max() - y.min())
 
@@ -33,7 +35,9 @@ def _train_small_model(n_estimators: int = 50) -> tuple[YieldEnsemble, np.ndarra
     X_val, y_val = X_tr[val_split:], y_tr[val_split:]
     X_tr, y_tr = X_tr[:val_split], y_tr[:val_split]
 
-    model = YieldEnsemble(n_estimators=n_estimators, lstm_epochs=5, lstm_patience=3, random_state=42)
+    model = YieldEnsemble(
+        n_estimators=n_estimators, lstm_epochs=5, lstm_patience=3, random_state=42
+    )
     model.fit(X_tr, y_tr, X_val, y_val)
     return model, X_te, y_te
 
@@ -95,8 +99,12 @@ class TestYieldEnsemble:
         finally:
             Path(path).unlink(missing_ok=True)
 
-        np.testing.assert_allclose(preds_before, preds_after, rtol=1e-5,
-                                   err_msg="Loaded model predictions should match original")
+        np.testing.assert_allclose(
+            preds_before,
+            preds_after,
+            rtol=1e-5,
+            err_msg="Loaded model predictions should match original",
+        )
 
     def test_predict_before_fit_raises(self) -> None:
         """Calling predict() before fit() should raise RuntimeError."""
@@ -127,9 +135,9 @@ class TestSHAPExplainer:
         model, X_te, _ = _train_small_model()
         explainer = SHAPExplainer()
         shap_vals = explainer.explain(model.rf, X_te)
-        assert shap_vals.shape == X_te.shape, (
-            f"SHAP values shape {shap_vals.shape} should match X shape {X_te.shape}"
-        )
+        assert (
+            shap_vals.shape == X_te.shape
+        ), f"SHAP values shape {shap_vals.shape} should match X shape {X_te.shape}"
 
     def test_top_features_length(self) -> None:
         """top_features() should return exactly n items."""
@@ -148,9 +156,9 @@ class TestSHAPExplainer:
         explainer = SHAPExplainer()
         top = explainer.top_features(model.rf, X_te, feat_names, n=n_feat)
         importances = [t[1] for t in top]
-        assert importances == sorted(importances, reverse=True), (
-            "Features should be sorted by descending importance"
-        )
+        assert importances == sorted(
+            importances, reverse=True
+        ), "Features should be sorted by descending importance"
 
     def test_top_features_returns_tuples(self) -> None:
         """Each element of top_features() result should be a (str, float) tuple."""

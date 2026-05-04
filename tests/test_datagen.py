@@ -19,20 +19,28 @@ class TestFabDataGenerator:
         """DataFrame should have n_lots * wafers_per_lot rows."""
         n_lots, wpl = 10, 5
         df = self._make_df(n_lots=n_lots, wafers_per_lot=wpl)
-        assert len(df) == n_lots * wpl, (
-            f"Expected {n_lots * wpl} rows, got {len(df)}"
-        )
+        assert len(df) == n_lots * wpl, f"Expected {n_lots * wpl} rows, got {len(df)}"
 
     def test_column_presence(self) -> None:
         """All expected columns must be present."""
         df = self._make_df()
         required = [
-            "lot_id", "wafer_id", "lot_sequence", "wafer_sequence",
-            "gate_oxide_thickness", "poly_cd", "implant_dose",
-            "anneal_temp", "metal_resistance", "contact_resistance",
-            "etch_rate", "deposition_unif",
-            "defect_density", "yield",
-            "wafer_map_mean", "wafer_map_std",
+            "lot_id",
+            "wafer_id",
+            "lot_sequence",
+            "wafer_sequence",
+            "gate_oxide_thickness",
+            "poly_cd",
+            "implant_dose",
+            "anneal_temp",
+            "metal_resistance",
+            "contact_resistance",
+            "etch_rate",
+            "deposition_unif",
+            "defect_density",
+            "yield",
+            "wafer_map_mean",
+            "wafer_map_std",
         ]
         for col in required:
             assert col in df.columns, f"Missing expected column: '{col}'"
@@ -70,18 +78,18 @@ class TestFabDataGenerator:
         """Same seed should produce identical DataFrames."""
         df1 = self._make_df(seed=99, n_lots=5, wafers_per_lot=5)
         df2 = self._make_df(seed=99, n_lots=5, wafers_per_lot=5)
-        assert df1["yield"].tolist() == df2["yield"].tolist(), (
-            "Same seed must produce identical yield values"
-        )
+        assert (
+            df1["yield"].tolist() == df2["yield"].tolist()
+        ), "Same seed must produce identical yield values"
         assert df1["gate_oxide_thickness"].tolist() == df2["gate_oxide_thickness"].tolist()
 
     def test_different_seeds_differ(self) -> None:
         """Different seeds must produce different data."""
         df1 = self._make_df(seed=1)
         df2 = self._make_df(seed=2)
-        assert df1["yield"].mean() != df2["yield"].mean(), (
-            "Different seeds should produce different data"
-        )
+        assert (
+            df1["yield"].mean() != df2["yield"].mean()
+        ), "Different seeds should produce different data"
 
     def test_defect_density_effect(self) -> None:
         """Higher defect density should correspond to lower yield on average.
@@ -97,7 +105,9 @@ class TestFabDataGenerator:
         early_dd = df.iloc[:n_window]["defect_density"].mean()
         late_dd = df.iloc[-n_window:]["defect_density"].mean()
         # Aging must increase defect density
-        assert late_dd > early_dd, f"Aging should increase defect density: early={early_dd:.4f}, late={late_dd:.4f}"
+        assert (
+            late_dd > early_dd
+        ), f"Aging should increase defect density: early={early_dd:.4f}, late={late_dd:.4f}"
 
         # Verify the Murphy model works: higher defect density -> lower yield
         # Test by sorting the full dataset

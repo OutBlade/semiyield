@@ -39,14 +39,14 @@ from typing import Any
 # Physical constants                                                    #
 # ------------------------------------------------------------------ #
 
-_Q = 1.60218e-19       # C   elementary charge
-_K_B = 1.38065e-23     # J/K Boltzmann constant
-_T = 300.0             # K   room temperature
-_EPS0 = 8.85419e-12    # F/m vacuum permittivity
+_Q = 1.60218e-19  # C   elementary charge
+_K_B = 1.38065e-23  # J/K Boltzmann constant
+_T = 300.0  # K   room temperature
+_EPS0 = 8.85419e-12  # F/m vacuum permittivity
 _EPS_OX = 3.9 * _EPS0  # F/m SiO2 permittivity (relative: 3.9)
-_EPS_SI = 11.7 * _EPS0 # F/m Si permittivity (relative: 11.7)
-_NI = 1.45e10          # cm^{-3} intrinsic carrier concentration at 300 K
-_kT_q = _K_B * _T / _Q # V  thermal voltage (kT/q)
+_EPS_SI = 11.7 * _EPS0  # F/m Si permittivity (relative: 11.7)
+_NI = 1.45e10  # cm^{-3} intrinsic carrier concentration at 300 K
+_kT_q = _K_B * _T / _Q  # V  thermal voltage (kT/q)
 
 
 # ------------------------------------------------------------------ #
@@ -54,114 +54,114 @@ _kT_q = _K_B * _T / _Q # V  thermal voltage (kT/q)
 # ------------------------------------------------------------------ #
 
 _BSIM3_DEFAULTS: dict[str, float] = {
-    "MOBMOD":  1.0,
-    "NFMOD":   0.0,
+    "MOBMOD": 1.0,
+    "NFMOD": 0.0,
     "BINUNIT": 1.0,
-    "LINT":    0.0,
-    "WINT":    0.0,
-    "TOXE":    3.0e-9,   # equivalent oxide thickness [m]
-    "TOXP":    3.0e-9,
-    "TOXM":    3.0e-9,
-    "DTOX":    0.0,
-    "XJ":      1.5e-7,   # source/drain junction depth [m]
-    "NCH":     1.7e17,   # channel doping [cm^{-3}]
-    "VTH0":    0.45,     # [V]
-    "K1":      0.53,     # first-order body effect [V^{0.5}]
-    "K2":      -0.02,    # second-order body effect
-    "K3":      80.0,
-    "K3B":     0.0,
-    "W0":      2.5e-6,
-    "NLX":     1.74e-7,
-    "DVT0W":   0.0,
-    "DVT1W":   5.3e6,
-    "DVT2W":   -0.032,
-    "DVT0":    2.2,
-    "DVT1":    0.53,
-    "DVT2":    -0.032,
-    "U0":      400.0,    # cm^2/(V*s) electron mobility
-    "UA":      2.25e-9,
-    "UB":      5.87e-19,
-    "UC":      -4.65e-11,
-    "VSAT":    8.0e4,    # m/s saturation velocity
-    "A0":      1.0,
-    "AGS":     0.0,
-    "B0":      0.0,
-    "B1":      0.0,
-    "KETA":    -0.047,
-    "A1":      0.0,
-    "A2":      1.0,
-    "RDSW":    200.0,
-    "PRWG":    0.0,
-    "PRWB":    0.0,
-    "WR":      1.0,
-    "DWG":     0.0,
-    "DWB":     0.0,
-    "VOFF":    -0.08,
+    "LINT": 0.0,
+    "WINT": 0.0,
+    "TOXE": 3.0e-9,  # equivalent oxide thickness [m]
+    "TOXP": 3.0e-9,
+    "TOXM": 3.0e-9,
+    "DTOX": 0.0,
+    "XJ": 1.5e-7,  # source/drain junction depth [m]
+    "NCH": 1.7e17,  # channel doping [cm^{-3}]
+    "VTH0": 0.45,  # [V]
+    "K1": 0.53,  # first-order body effect [V^{0.5}]
+    "K2": -0.02,  # second-order body effect
+    "K3": 80.0,
+    "K3B": 0.0,
+    "W0": 2.5e-6,
+    "NLX": 1.74e-7,
+    "DVT0W": 0.0,
+    "DVT1W": 5.3e6,
+    "DVT2W": -0.032,
+    "DVT0": 2.2,
+    "DVT1": 0.53,
+    "DVT2": -0.032,
+    "U0": 400.0,  # cm^2/(V*s) electron mobility
+    "UA": 2.25e-9,
+    "UB": 5.87e-19,
+    "UC": -4.65e-11,
+    "VSAT": 8.0e4,  # m/s saturation velocity
+    "A0": 1.0,
+    "AGS": 0.0,
+    "B0": 0.0,
+    "B1": 0.0,
+    "KETA": -0.047,
+    "A1": 0.0,
+    "A2": 1.0,
+    "RDSW": 200.0,
+    "PRWG": 0.0,
+    "PRWB": 0.0,
+    "WR": 1.0,
+    "DWG": 0.0,
+    "DWB": 0.0,
+    "VOFF": -0.08,
     "NFACTOR": 1.0,
-    "CDSC":    2.4e-4,
-    "CDSCD":   0.0,
-    "CDSCB":   0.0,
-    "CIT":     0.0,
-    "ETA0":    0.08,
-    "ETAB":    -0.07,
-    "DSUB":    0.56,
-    "PCLM":    1.3,
+    "CDSC": 2.4e-4,
+    "CDSCD": 0.0,
+    "CDSCB": 0.0,
+    "CIT": 0.0,
+    "ETA0": 0.08,
+    "ETAB": -0.07,
+    "DSUB": 0.56,
+    "PCLM": 1.3,
     "PDIBLC1": 0.39,
     "PDIBLC2": 8.6e-4,
     "PDIBLCB": 0.0,
-    "DROUT":   0.56,
-    "PSCBE1":  8.14e8,
-    "PSCBE2":  1.0e-7,
-    "PVAG":    0.0,
-    "DELTA":   0.01,
-    "RSH":     0.0,
-    "PRT":     0.0,
-    "UTE":     -1.5,
-    "KT1":     -0.11,
-    "KT1L":    0.0,
-    "KT2":     0.022,
-    "UA1":     4.31e-9,
-    "UB1":     -7.61e-18,
-    "UC1":     -5.6e-11,
-    "AT":      3.3e4,
-    "WL":      0.0,
-    "WLN":     1.0,
-    "WW":      0.0,
-    "WWN":     1.0,
-    "WWL":     0.0,
-    "LL":      0.0,
-    "LLN":     1.0,
-    "LW":      0.0,
-    "LWN":     1.0,
-    "LWL":     0.0,
-    "CAPMOD":  2.0,
-    "CGDO":    6.0e-10,
-    "CGSO":    6.0e-10,
-    "CGBO":    2.56e-11,
-    "CJ":      1.7e-3,
-    "PB":      1.0,
-    "MJ":      0.5,
-    "CJSW":    2.1e-10,
-    "PBSW":    1.0,
-    "MJSW":    0.43,
-    "CJSWG":   3.3e-10,
-    "PBSWG":   1.0,
-    "MJSWG":   0.43,
-    "CF":      0.0,
-    "TNOM":    27.0,
-    "JS":      1.0e-4,
-    "JSW":     0.0,
-    "NJ":      1.0,
-    "XTI":     3.0,
-    "IJTH":    0.1,
-    "TPB":     0.0,
-    "TPBSW":   0.0,
-    "TPBSWG":  0.0,
-    "TCJ":     0.0,
-    "TCJSW":   0.0,
-    "TCJSWG":  0.0,
+    "DROUT": 0.56,
+    "PSCBE1": 8.14e8,
+    "PSCBE2": 1.0e-7,
+    "PVAG": 0.0,
+    "DELTA": 0.01,
+    "RSH": 0.0,
+    "PRT": 0.0,
+    "UTE": -1.5,
+    "KT1": -0.11,
+    "KT1L": 0.0,
+    "KT2": 0.022,
+    "UA1": 4.31e-9,
+    "UB1": -7.61e-18,
+    "UC1": -5.6e-11,
+    "AT": 3.3e4,
+    "WL": 0.0,
+    "WLN": 1.0,
+    "WW": 0.0,
+    "WWN": 1.0,
+    "WWL": 0.0,
+    "LL": 0.0,
+    "LLN": 1.0,
+    "LW": 0.0,
+    "LWN": 1.0,
+    "LWL": 0.0,
+    "CAPMOD": 2.0,
+    "CGDO": 6.0e-10,
+    "CGSO": 6.0e-10,
+    "CGBO": 2.56e-11,
+    "CJ": 1.7e-3,
+    "PB": 1.0,
+    "MJ": 0.5,
+    "CJSW": 2.1e-10,
+    "PBSW": 1.0,
+    "MJSW": 0.43,
+    "CJSWG": 3.3e-10,
+    "PBSWG": 1.0,
+    "MJSWG": 0.43,
+    "CF": 0.0,
+    "TNOM": 27.0,
+    "JS": 1.0e-4,
+    "JSW": 0.0,
+    "NJ": 1.0,
+    "XTI": 3.0,
+    "IJTH": 0.1,
+    "TPB": 0.0,
+    "TPBSW": 0.0,
+    "TPBSWG": 0.0,
+    "TCJ": 0.0,
+    "TCJSW": 0.0,
+    "TCJSWG": 0.0,
     "VERSION": 3.24,
-    "LEVEL":   8.0,
+    "LEVEL": 8.0,
 }
 
 
@@ -217,12 +217,12 @@ class SPICEExporter:
         NA = float(process_params.get("doping_concentration", 1e17))
         xj_nm = float(process_params.get("junction_depth_nm", 50.0))
 
-        tox_m = tox_nm * 1e-9            # nm -> m
+        tox_m = tox_nm * 1e-9  # nm -> m
         _Lg_m = Lg_nm * 1e-9
         xj_m = xj_nm * 1e-9
 
         # Gate oxide capacitance per unit area
-        Cox = _EPS_OX / tox_m            # F/m^2
+        Cox = _EPS_OX / tox_m  # F/m^2
 
         # Surface potential at strong inversion: 2*phi_F
         phi_F = _kT_q * math.log(NA / _NI)
@@ -410,12 +410,9 @@ class SPICEExporter:
         lines = [f".model {model_name} {mtype} level={level}"]
 
         # Format parameters in groups of 4 per line for readability
-        param_items = [
-            (k, v) for k, v in params.items()
-            if k not in ("LEVEL",)
-        ]
+        param_items = [(k, v) for k, v in params.items() if k not in ("LEVEL",)]
         for i in range(0, len(param_items), 4):
-            chunk = param_items[i: i + 4]
+            chunk = param_items[i : i + 4]
             parts = []
             for k, v in chunk:
                 if isinstance(v, float) and (abs(v) >= 1e4 or (abs(v) < 1e-3 and v != 0)):
@@ -443,9 +440,9 @@ def _mobility_n(NA: float) -> float:
     float
         Electron mobility in cm^2/(V*s).
     """
-    mu_min = 65.0    # cm^2/(V*s)
+    mu_min = 65.0  # cm^2/(V*s)
     mu_max = 1414.0
-    Nref = 9.68e16   # cm^{-3}
+    Nref = 9.68e16  # cm^{-3}
     alpha = 0.68
 
     return mu_min + (mu_max - mu_min) / (1.0 + (NA / Nref) ** alpha)

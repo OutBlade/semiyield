@@ -28,6 +28,7 @@ from sklearn.preprocessing import StandardScaler
 
 try:
     from xgboost import XGBRegressor
+
     _HAS_XGB = True
 except ImportError:
     _HAS_XGB = False
@@ -37,6 +38,7 @@ try:
     import torch
     import torch.nn as nn
     from torch.utils.data import DataLoader, TensorDataset
+
     _HAS_TORCH = True
 except ImportError:
     _HAS_TORCH = False
@@ -48,6 +50,7 @@ except ImportError:
 # ------------------------------------------------------------------ #
 
 if _HAS_TORCH:
+
     class LSTMYieldNet(nn.Module):
         """Small LSTM network for sequential process step data.
 
@@ -82,8 +85,10 @@ if _HAS_TORCH:
             return self.head(last).squeeze(-1)
 
 else:
+
     class LSTMYieldNet:  # type: ignore[no-redef]
         """Stub when PyTorch is not available."""
+
         def __init__(self, *args: Any, **kwargs: Any) -> None:
             raise ImportError("PyTorch is required for LSTMYieldNet.")
 

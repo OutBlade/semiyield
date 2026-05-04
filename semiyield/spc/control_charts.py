@@ -33,22 +33,27 @@ import numpy as np
 
 # d2 values for estimating sigma_within from the average range
 # Index is subgroup size n (n=2..10)
-_D2 = {2: 1.128, 3: 1.693, 4: 2.059, 5: 2.326,
-       6: 2.534, 7: 2.704, 8: 2.847, 9: 2.970, 10: 3.078}
+_D2 = {2: 1.128, 3: 1.693, 4: 2.059, 5: 2.326, 6: 2.534, 7: 2.704, 8: 2.847, 9: 2.970, 10: 3.078}
 
 # c4 for estimating sigma_within from the average standard deviation
-_C4 = {2: 0.7979, 3: 0.8862, 4: 0.9213, 5: 0.9400,
-       6: 0.9515, 7: 0.9594, 8: 0.9650, 9: 0.9693, 10: 0.9727}
+_C4 = {
+    2: 0.7979,
+    3: 0.8862,
+    4: 0.9213,
+    5: 0.9400,
+    6: 0.9515,
+    7: 0.9594,
+    8: 0.9650,
+    9: 0.9693,
+    10: 0.9727,
+}
 
 # A2 control limit factor for Xbar-R chart
-_A2 = {2: 1.880, 3: 1.023, 4: 0.729, 5: 0.577,
-       6: 0.483, 7: 0.419, 8: 0.373, 9: 0.337, 10: 0.308}
+_A2 = {2: 1.880, 3: 1.023, 4: 0.729, 5: 0.577, 6: 0.483, 7: 0.419, 8: 0.373, 9: 0.337, 10: 0.308}
 
 # D3, D4 for R chart control limits
-_D3 = {2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0.076,
-       8: 0.136, 9: 0.184, 10: 0.223}
-_D4 = {2: 3.267, 3: 2.574, 4: 2.282, 5: 2.114, 6: 2.004,
-       7: 1.924, 8: 1.864, 9: 1.816, 10: 1.777}
+_D3 = {2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0.076, 8: 0.136, 9: 0.184, 10: 0.223}
+_D4 = {2: 3.267, 3: 2.574, 4: 2.282, 5: 2.114, 6: 2.004, 7: 1.924, 8: 1.864, 9: 1.816, 10: 1.777}
 
 
 class ControlChart:
@@ -155,8 +160,7 @@ class ControlChart:
 
         if self.chart_type == "EWMA":
             self._ewma_last = (
-                self.ewma_lambda * new_point
-                + (1 - self.ewma_lambda) * self._ewma_last
+                self.ewma_lambda * new_point + (1 - self.ewma_lambda) * self._ewma_last
             )
             return self.lcl <= self._ewma_last <= self.ucl
 
@@ -247,6 +251,7 @@ class ControlChart:
 # Western Electric Rules                                               #
 # ------------------------------------------------------------------ #
 
+
 def western_electric_violations(
     data: np.ndarray,
     ucl: float,
@@ -282,34 +287,39 @@ def western_electric_violations(
     for i, x in enumerate(data):
         # Rule 1: One point beyond 3-sigma
         if x > ucl or x < lcl:
-            violations.append((
-                i, 1,
-                f"Rule 1: point {i} ({x:.4f}) beyond 3-sigma control limit"
-            ))
+            violations.append((i, 1, f"Rule 1: point {i} ({x:.4f}) beyond 3-sigma control limit"))
 
     # Rule 2: Two of three consecutive points beyond 2-sigma (same side)
     for i in range(2, len(data)):
-        window = data[i - 2: i + 1]
+        window = data[i - 2 : i + 1]
         above = np.sum(window > cl + 2 * sigma)
         below = np.sum(window < cl - 2 * sigma)
         if above >= 2:
-            violations.append((i, 2, f"Rule 2: 2/3 consecutive points above +2-sigma near index {i}"))
+            violations.append(
+                (i, 2, f"Rule 2: 2/3 consecutive points above +2-sigma near index {i}")
+            )
         if below >= 2:
-            violations.append((i, 2, f"Rule 2: 2/3 consecutive points below -2-sigma near index {i}"))
+            violations.append(
+                (i, 2, f"Rule 2: 2/3 consecutive points below -2-sigma near index {i}")
+            )
 
     # Rule 3: Four of five consecutive points beyond 1-sigma (same side)
     for i in range(4, len(data)):
-        window = data[i - 4: i + 1]
+        window = data[i - 4 : i + 1]
         above = np.sum(window > cl + sigma)
         below = np.sum(window < cl - sigma)
         if above >= 4:
-            violations.append((i, 3, f"Rule 3: 4/5 consecutive points above +1-sigma near index {i}"))
+            violations.append(
+                (i, 3, f"Rule 3: 4/5 consecutive points above +1-sigma near index {i}")
+            )
         if below >= 4:
-            violations.append((i, 3, f"Rule 3: 4/5 consecutive points below -1-sigma near index {i}"))
+            violations.append(
+                (i, 3, f"Rule 3: 4/5 consecutive points below -1-sigma near index {i}")
+            )
 
     # Rule 4: Eight consecutive points on same side of CL
     for i in range(7, len(data)):
-        window = data[i - 7: i + 1]
+        window = data[i - 7 : i + 1]
         if np.all(window > cl):
             violations.append((i, 4, f"Rule 4: 8 consecutive points above CL, ending at index {i}"))
         if np.all(window < cl):
@@ -317,34 +327,48 @@ def western_electric_violations(
 
     # Rule 5: Six consecutive points trending strictly up or down
     for i in range(5, len(data)):
-        window = data[i - 5: i + 1]
+        window = data[i - 5 : i + 1]
         diffs = np.diff(window)
         if np.all(diffs > 0):
-            violations.append((i, 5, f"Rule 5: 6 consecutive points trending upward, ending at index {i}"))
+            violations.append(
+                (i, 5, f"Rule 5: 6 consecutive points trending upward, ending at index {i}")
+            )
         if np.all(diffs < 0):
-            violations.append((i, 5, f"Rule 5: 6 consecutive points trending downward, ending at index {i}"))
+            violations.append(
+                (i, 5, f"Rule 5: 6 consecutive points trending downward, ending at index {i}")
+            )
 
     # Rule 6: Fifteen consecutive points within 1-sigma of CL (stratification)
     for i in range(14, len(data)):
-        window = data[i - 14: i + 1]
+        window = data[i - 14 : i + 1]
         if np.all(np.abs(window - cl) < sigma):
-            violations.append((i, 6, f"Rule 6: 15 consecutive points within 1-sigma, ending at index {i}"))
+            violations.append(
+                (i, 6, f"Rule 6: 15 consecutive points within 1-sigma, ending at index {i}")
+            )
 
     # Rule 7: Fourteen consecutive points alternating up and down
     for i in range(13, len(data)):
-        window = data[i - 13: i + 1]
+        window = data[i - 13 : i + 1]
         diffs = np.diff(window)
         signs = np.sign(diffs)
         alternating = np.all(signs[:-1] * signs[1:] < 0)
         if alternating:
-            violations.append((i, 7, f"Rule 7: 14 consecutive alternating points, ending at index {i}"))
+            violations.append(
+                (i, 7, f"Rule 7: 14 consecutive alternating points, ending at index {i}")
+            )
 
     # Rule 8: Eight consecutive points beyond 1-sigma (both sides, mixture)
     for i in range(7, len(data)):
-        window = data[i - 7: i + 1]
+        window = data[i - 7 : i + 1]
         beyond_1sigma = np.abs(window - cl) > sigma
         if np.all(beyond_1sigma):
-            violations.append((i, 8, f"Rule 8: 8 consecutive points beyond 1-sigma (both sides), ending at index {i}"))
+            violations.append(
+                (
+                    i,
+                    8,
+                    f"Rule 8: 8 consecutive points beyond 1-sigma (both sides), ending at index {i}",
+                )
+            )
 
     return violations
 
@@ -352,6 +376,7 @@ def western_electric_violations(
 # ------------------------------------------------------------------ #
 # Process Capability                                                   #
 # ------------------------------------------------------------------ #
+
 
 def process_capability(
     data: np.ndarray,

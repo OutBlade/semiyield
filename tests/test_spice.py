@@ -55,9 +55,9 @@ class TestSPICEExporter:
         params = self._default_params()
         spice = exp.process_to_spice(params)
         expected = _reference_vth0(params["oxide_thickness_nm"], params["doping_concentration"])
-        assert abs(spice["VTH0"] - expected) < 1e-6, (
-            f"VTH0 mismatch: computed {spice['VTH0']:.6f} V, expected {expected:.6f} V"
-        )
+        assert (
+            abs(spice["VTH0"] - expected) < 1e-6
+        ), f"VTH0 mismatch: computed {spice['VTH0']:.6f} V, expected {expected:.6f} V"
 
     def test_vth0_increases_with_doping(self) -> None:
         """Higher substrate doping should increase VTH0 (stronger body effect)."""
@@ -66,9 +66,9 @@ class TestSPICEExporter:
         p_hi = dict(self._default_params(), doping_concentration=1e18)
         vth_lo = exp.process_to_spice(p_lo)["VTH0"]
         vth_hi = exp.process_to_spice(p_hi)["VTH0"]
-        assert vth_hi > vth_lo, (
-            f"VTH0 should increase with doping: low={vth_lo:.4f}, high={vth_hi:.4f}"
-        )
+        assert (
+            vth_hi > vth_lo
+        ), f"VTH0 should increase with doping: low={vth_lo:.4f}, high={vth_hi:.4f}"
 
     def test_tox_from_thickness(self) -> None:
         """TOXE in metres should equal oxide_thickness_nm / 1e9."""
@@ -77,9 +77,9 @@ class TestSPICEExporter:
         params = dict(self._default_params(), oxide_thickness_nm=tox_nm)
         spice = exp.process_to_spice(params)
         expected_m = tox_nm * 1e-9
-        assert abs(spice["TOXE"] - expected_m) < 1e-15, (
-            f"TOXE={spice['TOXE']:.3e} m does not match {expected_m:.3e} m"
-        )
+        assert (
+            abs(spice["TOXE"] - expected_m) < 1e-15
+        ), f"TOXE={spice['TOXE']:.3e} m does not match {expected_m:.3e} m"
 
     def test_spice_params_required_bsim_keys(self) -> None:
         """Output dict must contain essential BSIM3 parameters."""
@@ -159,9 +159,9 @@ class TestSPICEExporter:
         p_hi = dict(self._default_params(), doping_concentration=1e18)
         u0_lo = exp.process_to_spice(p_lo)["U0"]
         u0_hi = exp.process_to_spice(p_hi)["U0"]
-        assert u0_lo > u0_hi, (
-            f"Mobility should decrease with doping: low doping={u0_lo:.1f}, high doping={u0_hi:.1f}"
-        )
+        assert (
+            u0_lo > u0_hi
+        ), f"Mobility should decrease with doping: low doping={u0_lo:.1f}, high doping={u0_hi:.1f}"
 
     def test_bsim4_level_parameter(self) -> None:
         """BSIM4 model should have LEVEL = 14."""

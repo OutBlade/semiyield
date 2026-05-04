@@ -18,6 +18,7 @@ import numpy as np
 
 try:
     import shap
+
     _HAS_SHAP = True
 except ImportError:
     _HAS_SHAP = False
@@ -25,8 +26,10 @@ except ImportError:
 
 try:
     import matplotlib
+
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
+
     _HAS_MPL = True
 except ImportError:
     _HAS_MPL = False

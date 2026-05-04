@@ -40,24 +40,24 @@ _K_EV = 8.617333e-5  # eV/K
 # Growth rate: R = C * P * exp(-Ea / kT)   [nm/min per Torr]
 _GROWTH_PARAMS: dict[str, dict] = {
     "LPCVD": {
-        "SiO2": {"C": 8.0e8, "Ea": 1.90},    # TEOS-based LPCVD SiO2
-        "Si3N4": {"C": 5.0e9, "Ea": 2.10},   # DCS/NH3 LPCVD Si3N4
-        "poly_Si": {"C": 3.0e9, "Ea": 1.70}, # SiH4 LPCVD poly-Si
+        "SiO2": {"C": 8.0e8, "Ea": 1.90},  # TEOS-based LPCVD SiO2
+        "Si3N4": {"C": 5.0e9, "Ea": 2.10},  # DCS/NH3 LPCVD Si3N4
+        "poly_Si": {"C": 3.0e9, "Ea": 1.70},  # SiH4 LPCVD poly-Si
     },
     "PECVD": {
-        "SiO2": {"C": 2.0e6, "Ea": 0.50},    # SiH4/N2O PECVD SiO2
-        "Si3N4": {"C": 1.5e6, "Ea": 0.55},   # SiH4/NH3 PECVD Si3N4
-        "a_Si": {"C": 1.0e6, "Ea": 0.45},    # SiH4 a-Si:H
+        "SiO2": {"C": 2.0e6, "Ea": 0.50},  # SiH4/N2O PECVD SiO2
+        "Si3N4": {"C": 1.5e6, "Ea": 0.55},  # SiH4/NH3 PECVD Si3N4
+        "a_Si": {"C": 1.0e6, "Ea": 0.45},  # SiH4 a-Si:H
     },
     "ALD": {
-        "HfO2": {"C": 0.1, "Ea": 0.10},      # HfCl4/H2O ALD HfO2 [nm/cycle]
-        "Al2O3": {"C": 0.12, "Ea": 0.08},    # TMA/H2O ALD Al2O3  [nm/cycle]
-        "TiN": {"C": 0.08, "Ea": 0.12},      # TiCl4/NH3 ALD TiN  [nm/cycle]
+        "HfO2": {"C": 0.1, "Ea": 0.10},  # HfCl4/H2O ALD HfO2 [nm/cycle]
+        "Al2O3": {"C": 0.12, "Ea": 0.08},  # TMA/H2O ALD Al2O3  [nm/cycle]
+        "TiN": {"C": 0.08, "Ea": 0.12},  # TiCl4/NH3 ALD TiN  [nm/cycle]
     },
     "PVD": {
-        "Al": {"C": 1.5e3, "Ea": 0.05},      # DC magnetron sputtering Al
-        "TiN": {"C": 8.0e2, "Ea": 0.08},     # Reactive sputtering TiN
-        "W": {"C": 5.0e2, "Ea": 0.06},       # DC sputtering W
+        "Al": {"C": 1.5e3, "Ea": 0.05},  # DC magnetron sputtering Al
+        "TiN": {"C": 8.0e2, "Ea": 0.08},  # Reactive sputtering TiN
+        "W": {"C": 5.0e2, "Ea": 0.06},  # DC sputtering W
     },
 }
 
@@ -65,24 +65,24 @@ _GROWTH_PARAMS: dict[str, dict] = {
 # step_coverage = coverage_0 * exp(-AR / AR_char)
 # AR  = aspect ratio of feature (depth/width)
 _STEP_COVERAGE_PARAMS: dict[str, dict] = {
-    "LPCVD":  {"coverage_0": 0.92, "AR_char": 8.0},
-    "PECVD":  {"coverage_0": 0.80, "AR_char": 3.5},
-    "ALD":    {"coverage_0": 0.995, "AR_char": 100.0},
-    "PVD":    {"coverage_0": 0.60, "AR_char": 1.2},
+    "LPCVD": {"coverage_0": 0.92, "AR_char": 8.0},
+    "PECVD": {"coverage_0": 0.80, "AR_char": 3.5},
+    "ALD": {"coverage_0": 0.995, "AR_char": 100.0},
+    "PVD": {"coverage_0": 0.60, "AR_char": 1.2},
 }
 
 # Film stress parameters
 # sigma = sigma_intrinsic + (E/(1-nu)) * (alpha_film - alpha_sub) * dT
 _STRESS_PARAMS: dict[str, dict] = {
     # material: E_GPa, nu, alpha_ppm_K, sigma_intrinsic_MPa (compressive neg.)
-    "SiO2":    {"E": 70.0,  "nu": 0.17, "alpha": 0.55, "sigma_i": -250.0},
-    "Si3N4":   {"E": 250.0, "nu": 0.25, "alpha": 3.0,  "sigma_i": 1000.0},
-    "poly_Si": {"E": 160.0, "nu": 0.22, "alpha": 2.8,  "sigma_i": -200.0},
-    "HfO2":    {"E": 130.0, "nu": 0.28, "alpha": 5.8,  "sigma_i": -300.0},
-    "Al2O3":   {"E": 300.0, "nu": 0.24, "alpha": 8.0,  "sigma_i": -100.0},
-    "TiN":     {"E": 450.0, "nu": 0.25, "alpha": 9.4,  "sigma_i": 800.0},
-    "Al":      {"E": 70.0,  "nu": 0.35, "alpha": 23.1, "sigma_i": -50.0},
-    "W":       {"E": 411.0, "nu": 0.28, "alpha": 4.5,  "sigma_i": 1200.0},
+    "SiO2": {"E": 70.0, "nu": 0.17, "alpha": 0.55, "sigma_i": -250.0},
+    "Si3N4": {"E": 250.0, "nu": 0.25, "alpha": 3.0, "sigma_i": 1000.0},
+    "poly_Si": {"E": 160.0, "nu": 0.22, "alpha": 2.8, "sigma_i": -200.0},
+    "HfO2": {"E": 130.0, "nu": 0.28, "alpha": 5.8, "sigma_i": -300.0},
+    "Al2O3": {"E": 300.0, "nu": 0.24, "alpha": 8.0, "sigma_i": -100.0},
+    "TiN": {"E": 450.0, "nu": 0.25, "alpha": 9.4, "sigma_i": 800.0},
+    "Al": {"E": 70.0, "nu": 0.35, "alpha": 23.1, "sigma_i": -50.0},
+    "W": {"E": 411.0, "nu": 0.28, "alpha": 4.5, "sigma_i": 1200.0},
 }
 
 # Silicon substrate: alpha_Si = 2.6 ppm/K
@@ -110,8 +110,7 @@ class CVDModel:
     ) -> None:
         if process_type not in _GROWTH_PARAMS:
             raise ValueError(
-                f"Unknown process_type '{process_type}'.  "
-                f"Choose from {list(_GROWTH_PARAMS)}."
+                f"Unknown process_type '{process_type}'.  " f"Choose from {list(_GROWTH_PARAMS)}."
             )
         if material not in _GROWTH_PARAMS[process_type]:
             raise ValueError(
@@ -243,7 +242,7 @@ class CVDModel:
             )
         p = _STRESS_PARAMS[mat]
         biaxial_modulus = p["E"] * 1e3 / (1.0 - p["nu"])  # GPa -> MPa / (1-nu)
-        delta_alpha = (p["alpha"] - _ALPHA_SI) * 1e-6      # ppm -> dimensionless
+        delta_alpha = (p["alpha"] - _ALPHA_SI) * 1e-6  # ppm -> dimensionless
         sigma_thermal = biaxial_modulus * delta_alpha * temperature_delta
         return p["sigma_i"] + sigma_thermal
 

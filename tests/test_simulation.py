@@ -18,7 +18,6 @@ from semiyield.simulation import (
     LangmuirHinshelwoodModel,
 )
 
-
 # ================================================================== #
 # Deal-Grove Oxidation Tests                                           #
 # ================================================================== #
@@ -54,9 +53,9 @@ class TestDealGrove:
         rate_early = model.rate(10.0, 1000.0, "dry")
         rate_mid = model.rate(60.0, 1000.0, "dry")
         rate_late = model.rate(180.0, 1000.0, "dry")
-        assert rate_early > rate_mid > rate_late, (
-            f"Rate should decrease: {rate_early:.4f} > {rate_mid:.4f} > {rate_late:.4f}"
-        )
+        assert (
+            rate_early > rate_mid > rate_late
+        ), f"Rate should decrease: {rate_early:.4f} > {rate_mid:.4f} > {rate_late:.4f}"
 
     def test_deal_grove_temperature_dependence(self) -> None:
         """Higher temperature should give faster oxide growth (Arrhenius)."""
@@ -122,18 +121,21 @@ class TestIonImplantation:
         # 1 nm = 1e-7 cm  ->  integral units [cm^{-2}]
         dx_cm = (depths[1] - depths[0]) * 1e-7  # nm -> cm
         from scipy.integrate import trapezoid
+
         integrated_dose = trapezoid(conc, dx=dx_cm)
 
-        assert abs(integrated_dose - dose) / dose < 0.02, (
-            f"Integrated dose {integrated_dose:.3e} deviates from input dose {dose:.3e} by > 2%"
-        )
+        assert (
+            abs(integrated_dose - dose) / dose < 0.02
+        ), f"Integrated dose {integrated_dose:.3e} deviates from input dose {dose:.3e} by > 2%"
 
     def test_implantation_junction_depth_increases_with_dose(self) -> None:
         """Higher dose -> deeper junction (peak concentration higher -> meets background deeper)."""
         model = IonImplantationModel()
         xj1 = model.junction_depth(1e12, 80.0, "boron", background=1e16)
         xj2 = model.junction_depth(1e14, 80.0, "boron", background=1e16)
-        assert xj2 > xj1, f"Higher dose should give deeper junction: xj(1e12)={xj1:.1f}, xj(1e14)={xj2:.1f}"
+        assert (
+            xj2 > xj1
+        ), f"Higher dose should give deeper junction: xj(1e12)={xj1:.1f}, xj(1e14)={xj2:.1f}"
 
     def test_implantation_boron_deeper_than_arsenic(self) -> None:
         """Boron (lighter ion) should have larger projected range than arsenic at same energy."""
@@ -147,9 +149,9 @@ class TestIonImplantation:
         # Peak position (Rp) is larger for boron
         Rp_boron = depths[np.argmax(boron)]
         Rp_arsenic = depths[np.argmax(arsenic)]
-        assert Rp_boron > Rp_arsenic, (
-            f"Boron Rp ({Rp_boron:.1f} nm) should exceed arsenic Rp ({Rp_arsenic:.1f} nm)"
-        )
+        assert (
+            Rp_boron > Rp_arsenic
+        ), f"Boron Rp ({Rp_boron:.1f} nm) should exceed arsenic Rp ({Rp_arsenic:.1f} nm)"
 
     def test_implantation_phosphorus_between_boron_and_arsenic(self) -> None:
         """Phosphorus range should be between boron and arsenic at 80 keV."""
@@ -163,9 +165,9 @@ class TestIonImplantation:
             conc = model.profile(depths, dose, energy, sp)
             Rp[sp] = depths[np.argmax(conc)]
 
-        assert Rp["arsenic"] < Rp["phosphorus"] < Rp["boron"], (
-            f"Expected As < P < B range ordering; got {Rp}"
-        )
+        assert (
+            Rp["arsenic"] < Rp["phosphorus"] < Rp["boron"]
+        ), f"Expected As < P < B range ordering; got {Rp}"
 
     def test_implantation_profile_positive(self) -> None:
         """All concentration values should be non-negative."""
@@ -232,7 +234,9 @@ class TestEtching:
         """At very high pressure, coverage should approach 1."""
         model = LangmuirHinshelwoodModel()
         theta_high = model.coverage(1e6, 50.0, "SiO2")
-        assert theta_high > 0.99, f"Coverage should saturate near 1 at high pressure: {theta_high:.4f}"
+        assert (
+            theta_high > 0.99
+        ), f"Coverage should saturate near 1 at high pressure: {theta_high:.4f}"
 
     def test_etch_two_reactant_positive(self) -> None:
         """Two-reactant rate should be positive."""
@@ -277,9 +281,9 @@ class TestDeposition:
         ald = CVDModel(process_type="ALD", material="HfO2").step_coverage(ar)
         cvd = CVDModel(process_type="LPCVD", material="SiO2").step_coverage(ar)
         pvd = CVDModel(process_type="PVD", material="Al").step_coverage(ar)
-        assert ald > cvd > pvd, (
-            f"Step coverage order wrong: ALD={ald:.3f}, CVD={cvd:.3f}, PVD={pvd:.3f}"
-        )
+        assert (
+            ald > cvd > pvd
+        ), f"Step coverage order wrong: ALD={ald:.3f}, CVD={cvd:.3f}, PVD={pvd:.3f}"
 
     def test_deposition_step_coverage_decreases_with_ar(self) -> None:
         """Step coverage decreases for higher aspect ratio features."""
@@ -294,7 +298,9 @@ class TestDeposition:
         # Cooling after deposition (positive dT)
         stress_cool = model.stress(temperature_delta=600.0, material="Si3N4")
         # From table: sigma_intrinsic = +1000 MPa (tensile)
-        assert stress_cool > 0, f"Si3N4 should be tensile (positive stress), got {stress_cool:.0f} MPa"
+        assert (
+            stress_cool > 0
+        ), f"Si3N4 should be tensile (positive stress), got {stress_cool:.0f} MPa"
 
     def test_deposition_temperature_dependence(self) -> None:
         """Growth rate should increase with temperature (Arrhenius)."""
@@ -319,6 +325,6 @@ class TestDeposition:
         ald_u = CVDModel(process_type="ALD", material="HfO2").uniformity(300.0)
         pecvd_u = CVDModel(process_type="PECVD", material="SiO2").uniformity(300.0)
         pvd_u = CVDModel(process_type="PVD", material="Al").uniformity(300.0)
-        assert ald_u < pecvd_u < pvd_u, (
-            f"ALD should be most uniform: ALD={ald_u:.2f}%, PECVD={pecvd_u:.2f}%, PVD={pvd_u:.2f}%"
-        )
+        assert (
+            ald_u < pecvd_u < pvd_u
+        ), f"ALD should be most uniform: ALD={ald_u:.2f}%, PECVD={pecvd_u:.2f}%, PVD={pvd_u:.2f}%"

@@ -47,10 +47,10 @@ _K_EV = 8.617333e-5  # eV/K
 # Single-reactant parameters (CF4-based chemistry)
 _SINGLE_PARAMS: dict[str, tuple[float, float, float, float]] = {
     "SiO2": (
-        8.5e3,    # k_s0  [nm/min]
-        0.25,     # Ea_ks [eV]
-        3.2e-2,   # K0    [mTorr^{-1}]
-        -0.12,    # Ea_K  [eV]  (exothermic adsorption -> negative)
+        8.5e3,  # k_s0  [nm/min]
+        0.25,  # Ea_ks [eV]
+        3.2e-2,  # K0    [mTorr^{-1}]
+        -0.12,  # Ea_K  [eV]  (exothermic adsorption -> negative)
     ),
     "Si": (
         5.0e3,
@@ -70,27 +70,27 @@ _SINGLE_PARAMS: dict[str, tuple[float, float, float, float]] = {
 # Reactant A = CHF3 (fluorocarbon film former), reactant B = O2 (polymer cleaner)
 _TWO_REACTANT_PARAMS: dict[str, dict] = {
     "SiO2": {
-        "k0":    1.2e4,   # nm/min
-        "Ea_k":  0.22,    # eV
-        "KA0":   4.0e-2,
+        "k0": 1.2e4,  # nm/min
+        "Ea_k": 0.22,  # eV
+        "KA0": 4.0e-2,
         "Ea_KA": -0.13,
-        "KB0":   1.5e-2,
+        "KB0": 1.5e-2,
         "Ea_KB": -0.09,
     },
     "Si": {
-        "k0":    4.0e3,
-        "Ea_k":  0.35,
-        "KA0":   1.8e-2,
+        "k0": 4.0e3,
+        "Ea_k": 0.35,
+        "KA0": 1.8e-2,
         "Ea_KA": -0.08,
-        "KB0":   2.0e-2,
+        "KB0": 2.0e-2,
         "Ea_KB": -0.11,
     },
     "Si3N4": {
-        "k0":    5.5e3,
-        "Ea_k":  0.29,
-        "KA0":   2.2e-2,
+        "k0": 5.5e3,
+        "Ea_k": 0.29,
+        "KA0": 2.2e-2,
         "Ea_KA": -0.10,
-        "KB0":   1.8e-2,
+        "KB0": 1.8e-2,
         "Ea_KB": -0.10,
     },
 }
@@ -157,9 +157,7 @@ class LangmuirHinshelwoodModel:
             return self._single_rate(pressure, T_K, material)
         else:
             if pressure_b is None:
-                raise ValueError(
-                    "pressure_b (O2 pressure) is required for two_reactant mode."
-                )
+                raise ValueError("pressure_b (O2 pressure) is required for two_reactant mode.")
             return self._two_reactant_rate(pressure, pressure_b, T_K, material)
 
     def selectivity(
@@ -231,18 +229,14 @@ class LangmuirHinshelwoodModel:
     def _single_rate(self, pressure: float, T_K: float, material: str) -> float:
         """Single-reactant L-H etch rate."""
         if material not in _SINGLE_PARAMS:
-            raise ValueError(
-                f"Unknown material '{material}'.  Choose from {list(_SINGLE_PARAMS)}."
-            )
+            raise ValueError(f"Unknown material '{material}'.  Choose from {list(_SINGLE_PARAMS)}.")
         ks0, Ea_ks, K0, Ea_K = _SINGLE_PARAMS[material]
         k_s = _arr(ks0, Ea_ks, T_K)
         K = _arr(K0, Ea_K, T_K)
         theta = (K * pressure) / (1.0 + K * pressure)
         return k_s * theta
 
-    def _two_reactant_rate(
-        self, P_A: float, P_B: float, T_K: float, material: str
-    ) -> float:
+    def _two_reactant_rate(self, P_A: float, P_B: float, T_K: float, material: str) -> float:
         """Two-reactant competitive adsorption etch rate.
 
         R = k * (K_A*P_A * K_B*P_B) / (1 + K_A*P_A + K_B*P_B)^2

@@ -28,20 +28,19 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-
 # ------------------------------------------------------------------ #
 # Process target values and natural variation (1-sigma)                #
 # ------------------------------------------------------------------ #
 
 _PROCESS_TARGETS: dict[str, dict[str, float]] = {
-    "gate_oxide_thickness": {"mean": 8.5,    "sigma": 0.3},    # nm
-    "poly_cd":              {"mean": 90.0,   "sigma": 3.0},    # nm (critical dim.)
-    "implant_dose":         {"mean": 1.0e13, "sigma": 2.0e11}, # cm^{-2}
-    "anneal_temp":          {"mean": 1000.0, "sigma": 5.0},    # deg C
-    "metal_resistance":     {"mean": 0.08,   "sigma": 0.005},  # ohm/sq
-    "contact_resistance":   {"mean": 15.0,   "sigma": 1.5},    # ohm
-    "etch_rate":            {"mean": 120.0,  "sigma": 6.0},    # nm/min
-    "deposition_unif":      {"mean": 2.0,    "sigma": 0.3},    # % 1-sigma
+    "gate_oxide_thickness": {"mean": 8.5, "sigma": 0.3},  # nm
+    "poly_cd": {"mean": 90.0, "sigma": 3.0},  # nm (critical dim.)
+    "implant_dose": {"mean": 1.0e13, "sigma": 2.0e11},  # cm^{-2}
+    "anneal_temp": {"mean": 1000.0, "sigma": 5.0},  # deg C
+    "metal_resistance": {"mean": 0.08, "sigma": 0.005},  # ohm/sq
+    "contact_resistance": {"mean": 15.0, "sigma": 1.5},  # ohm
+    "etch_rate": {"mean": 120.0, "sigma": 6.0},  # nm/min
+    "deposition_unif": {"mean": 2.0, "sigma": 0.3},  # % 1-sigma
 }
 
 
@@ -66,7 +65,7 @@ def _murphy_yield(chip_area_cm2: float, defect_density: float) -> float:
     if AD < 1e-10:
         return 1.0
     inner = (1.0 - math.exp(-AD)) / AD
-    return inner ** 2
+    return inner**2
 
 
 class FabDataGenerator:
@@ -113,9 +112,7 @@ class FabDataGenerator:
     # Public API                                                         #
     # ---------------------------------------------------------------- #
 
-    def generate(
-        self, n_lots: int = 100, wafers_per_lot: int = 25
-    ) -> pd.DataFrame:
+    def generate(self, n_lots: int = 100, wafers_per_lot: int = 25) -> pd.DataFrame:
         """Generate synthetic fab dataset.
 
         Parameters
@@ -135,19 +132,14 @@ class FabDataGenerator:
         rows: list[dict[str, Any]] = []
 
         # Initialise drifting process means at nominal targets
-        current_means = {
-            param: info["mean"]
-            for param, info in _PROCESS_TARGETS.items()
-        }
+        current_means = {param: info["mean"] for param, info in _PROCESS_TARGETS.items()}
 
         for lot_idx in range(n_lots):
             lot_id = f"LOT{lot_idx:04d}"
 
             # --- Lot-to-lot drift: random walk on process means ---
             for param, info in _PROCESS_TARGETS.items():
-                step = self.rng.normal(
-                    0.0, self.drift_rate * info["sigma"]
-                )
+                step = self.rng.normal(0.0, self.drift_rate * info["sigma"])
                 current_means[param] += step
 
             # --- Equipment aging: etch rate decreases, uniformity worsens ---
@@ -176,21 +168,20 @@ class FabDataGenerator:
 
                     # Radial non-uniformity for thickness/CD parameters
                     if param in ("gate_oxide_thickness", "poly_cd"):
-                        radial_offset = self._radial_nonuniformity(
-                            param, info["sigma"]
-                        )
+                        radial_offset = self._radial_nonuniformity(param, info["sigma"])
                         mean += radial_offset
 
-                    meas[param] = float(
-                        self.rng.normal(mean, info["sigma"])
-                    )
+                    meas[param] = float(self.rng.normal(mean, info["sigma"]))
 
                 # --- Defect density based on process cleanliness ---
                 # Cleanliness worsens with equipment age and large deviations
-                deviation = abs(
-                    meas["gate_oxide_thickness"]
-                    - _PROCESS_TARGETS["gate_oxide_thickness"]["mean"]
-                ) / _PROCESS_TARGETS["gate_oxide_thickness"]["sigma"]
+                deviation = (
+                    abs(
+                        meas["gate_oxide_thickness"]
+                        - _PROCESS_TARGETS["gate_oxide_thickness"]["mean"]
+                    )
+                    / _PROCESS_TARGETS["gate_oxide_thickness"]["sigma"]
+                )
 
                 base_defect = 0.05  # defects/cm^2 baseline
                 defect_density = base_defect * (1.0 + 0.3 * age + 0.1 * deviation)
@@ -242,9 +233,10 @@ class FabDataGenerator:
             local yield values in [0, 1].
         """
         # Derive a local RNG from wafer_id hash so maps are reproducible
-        wafer_seed = abs(hash(wafer_id)) % (2 ** 31)
-        local_rng = np.random.default_rng(wafer_seed if self._seed is None
-                                          else self._seed + wafer_seed % 10000)
+        wafer_seed = abs(hash(wafer_id)) % (2**31)
+        local_rng = np.random.default_rng(
+            wafer_seed if self._seed is None else self._seed + wafer_seed % 10000
+        )
 
         n = self.wafer_map_size
         cx, cy = n / 2.0, n / 2.0
@@ -254,7 +246,7 @@ class FabDataGenerator:
         r = np.sqrt((xx - cx) ** 2 + (yy - cy) ** 2) / (n / 2.0)
 
         # Radial yield profile: slightly higher in center, drops at edge
-        radial = 1.0 - nonuniformity_level * (r ** 2)
+        radial = 1.0 - nonuniformity_level * (r**2)
 
         # Random defect contribution
         random_component = 1.0 - local_rng.exponential(0.02, size=(n, n))

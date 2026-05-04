@@ -45,17 +45,17 @@ _RATE_CONSTANTS = {
         # Original values in um^2/h (B) and um/h (B/A); converted to cm^2/s and cm/s:
         #   1 um^2/h = 1e-8 cm^2 / 3600 s  =>  multiply by 2.778e-12
         #   1 um/h   = 1e-4 cm  / 3600 s   =>  multiply by 2.778e-8
-        "B0": 7.72e2 * 2.778e-12,   # cm^2/s  pre-exponential parabolic
-        "Ea_B": 1.23,                # eV      parabolic activation energy
-        "BA0": 6.23e6 * 2.778e-8,   # cm/s    pre-exponential linear
-        "Ea_BA": 2.00,               # eV      linear activation energy
+        "B0": 7.72e2 * 2.778e-12,  # cm^2/s  pre-exponential parabolic
+        "Ea_B": 1.23,  # eV      parabolic activation energy
+        "BA0": 6.23e6 * 2.778e-8,  # cm/s    pre-exponential linear
+        "Ea_BA": 2.00,  # eV      linear activation energy
     },
     "wet": {
         # Wet (H2O) oxidation from Jaeger Table 3-1
-        "B0": 2.14e2 * 2.778e-12,   # cm^2/s
-        "Ea_B": 0.71,                # eV
-        "BA0": 1.63e8 * 2.778e-8,   # cm/s
-        "Ea_BA": 2.05,               # eV
+        "B0": 2.14e2 * 2.778e-12,  # cm^2/s
+        "Ea_B": 0.71,  # eV
+        "BA0": 1.63e8 * 2.778e-8,  # cm/s
+        "Ea_BA": 2.05,  # eV
     },
 }
 
@@ -147,17 +147,17 @@ class DealGroveModel:
         >>> model.grow(60, 1000, "dry")   # 1 h dry at 1000 C
         """
         T_K = temperature + 273.15
-        t_s = time * 60.0           # minutes -> seconds
+        t_s = time * 60.0  # minutes -> seconds
 
         B, BA = self._rate_constants(atmosphere, T_K)
         A = B / BA
 
         # tau: time equivalent for initial oxide thickness (cm)
         x0_cm = initial_thickness_nm * 1e-7  # nm -> cm
-        tau_s = (x0_cm ** 2 + A * x0_cm) / B  # from eq. (1) with x=x0, t=0
+        tau_s = (x0_cm**2 + A * x0_cm) / B  # from eq. (1) with x=x0, t=0
 
         # Solve eq. (2)
-        discriminant = 1.0 + (t_s + tau_s) / (A ** 2 / (4.0 * B))
+        discriminant = 1.0 + (t_s + tau_s) / (A**2 / (4.0 * B))
         x_cm = (A / 2.0) * (math.sqrt(discriminant) - 1.0)
         return x_cm * 1e7  # cm -> nm
 
@@ -224,19 +224,14 @@ class DealGroveModel:
         """
         times = np.asarray(time_array, dtype=float)
         return np.array(
-            [
-                self.grow(t, temperature, atmosphere, initial_thickness_nm)
-                for t in times
-            ]
+            [self.grow(t, temperature, atmosphere, initial_thickness_nm) for t in times]
         )
 
     # ---------------------------------------------------------------- #
     # Private helpers                                                    #
     # ---------------------------------------------------------------- #
 
-    def _rate_constants(
-        self, atmosphere: str, temperature_k: float
-    ) -> tuple[float, float]:
+    def _rate_constants(self, atmosphere: str, temperature_k: float) -> tuple[float, float]:
         """Return (B, B/A) rate constants at the given temperature.
 
         Parameters
@@ -252,9 +247,7 @@ class DealGroveModel:
             (B [cm^2/s], B/A [cm/s])
         """
         if atmosphere not in _RATE_CONSTANTS:
-            raise ValueError(
-                f"Unknown atmosphere '{atmosphere}'.  Choose 'dry' or 'wet'."
-            )
+            raise ValueError(f"Unknown atmosphere '{atmosphere}'.  Choose 'dry' or 'wet'.")
         c = _RATE_CONSTANTS[atmosphere]
         B = _arrhenius(c["B0"], c["Ea_B"], temperature_k)
         BA = _arrhenius(c["BA0"], c["Ea_BA"], temperature_k)

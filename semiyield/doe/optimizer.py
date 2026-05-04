@@ -29,6 +29,7 @@ try:
     from botorch.acquisition import ExpectedImprovement
     from botorch.optim import optimize_acqf
     from gpytorch.mlls import ExactMarginalLogLikelihood
+
     _HAS_BOTORCH = True
 except ImportError:
     _HAS_BOTORCH = False
@@ -39,8 +40,10 @@ except ImportError:
 
 try:
     import matplotlib
+
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
+
     _HAS_MPL = True
 except ImportError:
     _HAS_MPL = False
@@ -183,10 +186,7 @@ class ProcessWindowOptimizer:
         best_x = self._X_obs[best_idx]
         best_y = float(self._y_obs[best_idx])
 
-        best_params = {
-            name: float(val)
-            for name, val in zip(self._param_names, best_x)
-        }
+        best_params = {name: float(val) for name, val in zip(self._param_names, best_x)}
 
         return {
             "best_params": best_params,
@@ -236,8 +236,12 @@ class ProcessWindowOptimizer:
 
         for i, name in enumerate(self._param_names):
             lo_bound, hi_bound = self._bounds_dict[name]
-            x_lo = self._binary_search_window(center_x, i, lo_bound, center_x[i], threshold, direction="left")
-            x_hi = self._binary_search_window(center_x, i, center_x[i], hi_bound, threshold, direction="right")
+            x_lo = self._binary_search_window(
+                center_x, i, lo_bound, center_x[i], threshold, direction="left"
+            )
+            x_hi = self._binary_search_window(
+                center_x, i, center_x[i], hi_bound, threshold, direction="right"
+            )
             window[name] = (float(x_lo), float(x_hi))
 
         return window
@@ -410,9 +414,7 @@ class ProcessWindowOptimizer:
 
         return mean, std
 
-    def _rbf_predict(
-        self, X_norm: np.ndarray
-    ) -> tuple[np.ndarray, np.ndarray]:
+    def _rbf_predict(self, X_norm: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
         """Simple RBF kernel interpolation as scipy fallback."""
         from scipy.interpolate import RBFInterpolator
 
