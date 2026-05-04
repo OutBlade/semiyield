@@ -32,7 +32,7 @@ try:
     _HAS_XGB = True
 except ImportError:
     _HAS_XGB = False
-    warnings.warn("xgboost not found; XGBRegressor will be replaced by a second RF.")
+    warnings.warn("xgboost not found; XGBRegressor will be replaced by a second RF.", stacklevel=2)
 
 try:
     import torch
@@ -42,7 +42,7 @@ try:
     _HAS_TORCH = True
 except ImportError:
     _HAS_TORCH = False
-    warnings.warn("PyTorch not found; LSTMYieldNet will be disabled.")
+    warnings.warn("PyTorch not found; LSTMYieldNet will be disabled.", stacklevel=2)
 
 
 # ------------------------------------------------------------------ #
@@ -76,7 +76,7 @@ if _HAS_TORCH:
             self.dropout = nn.Dropout(dropout)
             self.head = nn.Linear(hidden_size, 1)
 
-        def forward(self, x: "torch.Tensor") -> "torch.Tensor":
+        def forward(self, x: torch.Tensor) -> torch.Tensor:
             # x: (batch, seq, features)
             out, _ = self.lstm(x)
             # Use last time-step output
@@ -172,7 +172,7 @@ class YieldEnsemble:
         y_train: np.ndarray,
         X_val: np.ndarray,
         y_val: np.ndarray,
-    ) -> "YieldEnsemble":
+    ) -> YieldEnsemble:
         """Train all base models and the ensemble meta-learner.
 
         Parameters
@@ -342,7 +342,7 @@ class YieldEnsemble:
             pickle.dump(state, f)
 
     @classmethod
-    def load(cls, path: str | Path) -> "YieldEnsemble":
+    def load(cls, path: str | Path) -> YieldEnsemble:
         """Load a previously saved ensemble.
 
         Parameters

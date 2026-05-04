@@ -22,7 +22,9 @@ try:
     _HAS_SHAP = True
 except ImportError:
     _HAS_SHAP = False
-    warnings.warn("shap not installed; SHAPExplainer will use a permutation-based fallback.")
+    warnings.warn(
+        "shap not installed; SHAPExplainer will use a permutation-based fallback.", stacklevel=2
+    )
 
 try:
     import matplotlib
@@ -126,7 +128,7 @@ class SHAPExplainer:
             )
 
         ranked = sorted(
-            zip(feature_names, mean_abs.tolist()),
+            zip(feature_names, mean_abs.tolist(), strict=False),
             key=lambda t: t[1],
             reverse=True,
         )
@@ -158,7 +160,7 @@ class SHAPExplainer:
             Figure object.  Returns None if matplotlib is unavailable.
         """
         if not _HAS_MPL:
-            warnings.warn("matplotlib not available; cannot create plot.")
+            warnings.warn("matplotlib not available; cannot create plot.", stacklevel=2)
             return None
 
         mean_abs = np.abs(shap_values).mean(axis=0)

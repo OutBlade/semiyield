@@ -22,7 +22,6 @@ Process capability indices (AIAG SPC Manual, Section IV):
 from __future__ import annotations
 
 import math
-import warnings
 from typing import Literal
 
 import numpy as np
@@ -109,7 +108,7 @@ class ControlChart:
     # Public API                                                         #
     # ---------------------------------------------------------------- #
 
-    def fit(self, data: np.ndarray) -> "ControlChart":
+    def fit(self, data: np.ndarray) -> ControlChart:
         """Compute control limits from Phase I data.
 
         Parameters

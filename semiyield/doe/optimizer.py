@@ -18,15 +18,16 @@ Reference:
 from __future__ import annotations
 
 import warnings
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 import numpy as np
 
 try:
     import torch
+    from botorch.acquisition import ExpectedImprovement
     from botorch.fit import fit_gpytorch_mll
     from botorch.models import SingleTaskGP
-    from botorch.acquisition import ExpectedImprovement
     from botorch.optim import optimize_acqf
     from gpytorch.mlls import ExactMarginalLogLikelihood
 
@@ -35,7 +36,8 @@ except ImportError:
     _HAS_BOTORCH = False
     warnings.warn(
         "botorch/gpytorch not available; using scipy.optimize fallback for "
-        "Bayesian optimization.  Install botorch for full GP functionality."
+        "Bayesian optimization.  Install botorch for full GP functionality.",
+        stacklevel=2,
     )
 
 try:
@@ -186,7 +188,9 @@ class ProcessWindowOptimizer:
         best_x = self._X_obs[best_idx]
         best_y = float(self._y_obs[best_idx])
 
-        best_params = {name: float(val) for name, val in zip(self._param_names, best_x)}
+        best_params = {
+            name: float(val) for name, val in zip(self._param_names, best_x, strict=False)
+        }
 
         return {
             "best_params": best_params,
@@ -356,15 +360,19 @@ class ProcessWindowOptimizer:
         best_f = torch.tensor(float(self._y_norm.max()), dtype=torch.float64)
         EI = ExpectedImprovement(self._gp_model, best_f=best_f)
 
-        candidates, _ = optimize_acqf(
-            acq_function=EI,
-            bounds=bounds_t,
-            q=n,
-            num_restarts=5,
-            raw_samples=64,
-        )
+        # EI only supports q=1; collect n candidates individually
+        all_cands = []
+        for _ in range(n):
+            cand, _ = optimize_acqf(
+                acq_function=EI,
+                bounds=bounds_t,
+                q=1,
+                num_restarts=5,
+                raw_samples=64,
+            )
+            all_cands.append(cand.detach().numpy())
 
-        candidates_np = candidates.detach().numpy()
+        candidates_np = np.vstack(all_cands)
         # Denormalise
         return candidates_np * ranges + lowers
 

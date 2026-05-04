@@ -1,6 +1,6 @@
-from .oxidation import DealGroveModel
-from .implantation import IonImplantationModel
-from .etching import LangmuirHinshelwoodModel
 from .deposition import CVDModel
+from .etching import LangmuirHinshelwoodModel
+from .implantation import IonImplantationModel
+from .oxidation import DealGroveModel
 
 __all__ = ["DealGroveModel", "IonImplantationModel", "LangmuirHinshelwoodModel", "CVDModel"]

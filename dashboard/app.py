@@ -12,9 +12,9 @@ Navigation pages:
 
 from __future__ import annotations
 
+import io
 import os
 import sys
-import io
 import tempfile
 from pathlib import Path
 
@@ -23,18 +23,18 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import numpy as np
 import pandas as pd
-import plotly.graph_objects as go
 import plotly.express as px
+import plotly.graph_objects as go
 import streamlit as st
 
+from semiyield.datagen import FabDataGenerator
 from semiyield.simulation import (
+    CVDModel,
     DealGroveModel,
     IonImplantationModel,
     LangmuirHinshelwoodModel,
-    CVDModel,
 )
-from semiyield.datagen import FabDataGenerator
-from semiyield.spc import ControlChart, western_electric_violations, process_capability
+from semiyield.spc import ControlChart, process_capability, western_electric_violations
 from semiyield.spice import SPICEExporter
 
 # semiyield.models (torch, xgboost, shap) and semiyield.doe (botorch) are
@@ -500,7 +500,7 @@ def page_spc() -> None:
 def page_yield_prediction() -> None:
     st.title("Yield Prediction")
 
-    from semiyield.models import YieldEnsemble, SHAPExplainer  # noqa: PLC0415
+    from semiyield.models import SHAPExplainer, YieldEnsemble  # noqa: PLC0415
 
     if st.session_state.get("fab_df") is None:
         st.warning("Generate fab data first using the Data Generator page.")
