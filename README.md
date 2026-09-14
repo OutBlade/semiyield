@@ -2,6 +2,10 @@
 
 # SemiYield
 
+<!-- project-navigation -->
+[Getting started](#installation) · [Features](#key-capabilities) · [Documentation](#architecture)
+<!-- /project-navigation -->
+
 **AI-driven semiconductor process optimization and yield prediction**
 
 [![CI](https://github.com/OutBlade/semiyield/actions/workflows/ci.yml/badge.svg)](https://github.com/OutBlade/semiyield/actions)
